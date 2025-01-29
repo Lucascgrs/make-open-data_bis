@@ -104,7 +104,7 @@ dvf_2023:
   production: true
 
 dvf_2024:
-  storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/dvf_2023/full.csv"
+  storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/dvf_2024/full.csv"
   csv_delimiter: ","
   db_schema: "sources"
   file_format: 'csv'
