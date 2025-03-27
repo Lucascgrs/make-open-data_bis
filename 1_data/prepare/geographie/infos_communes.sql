@@ -6,7 +6,7 @@ with filtre_cog_communes as (
     from {{ source('sources', 'cog_communes')}} as cog_communes     
     where cog_communes.type in ('commune-actuelle', 'arrondissement-municipal')
 
-),denomalise_cog as (
+), denomalise_cog as (
     select
         LPAD(CAST(filtre_cog_communes.code as TEXT), 5, '0') as code_commune,
         filtre_cog_communes.nom as nom_commune,
@@ -32,6 +32,7 @@ with filtre_cog_communes as (
         CAST(SPLIT_PART(cog_poste._geopoint, ',', 1) AS FLOAT) as commune_latitude,
         CAST(SPLIT_PART(cog_poste._geopoint, ',', 2) AS FLOAT) as commune_longitude
     from {{ source('sources', 'cog_poste')}}  as cog_poste
+
 ), ign_shapes as (
     select "INSEE_COM" as code_commune,
             geometry as commune_contour 
@@ -47,7 +48,8 @@ select
     laposte_gps.commune_latitude,
     laposte_gps.commune_longitude,
     ST_SetSRID(ST_MakePoint(laposte_gps.commune_latitude, laposte_gps.commune_longitude), 4326) as commune_centre_geopoint,
-    ign_shapes.commune_contour
+    ign_shapes.commune_contour,
+    'test_value' as test_column -- Ajout de la colonne test
 from denomalise_cog
 left join laposte_gps on denomalise_cog.code_commune = laposte_gps.code_commune
 left join ign_shapes on denomalise_cog.code_commune = ign_shapes.code_commune
