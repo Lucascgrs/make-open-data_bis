@@ -74,6 +74,13 @@ models:
     - name: nom_region
       description: "nom region"
       data_type: string
+    - name: SCoT
+      description: "nom de la SCoT"
+      data_type: string
+    - name: SIREN SCoT
+      description: "N° SIREN de la SCoT"
+      data_type: string
+
 
 - name: commune_centroid_poste
   description: 'Table de passage pour avoir une relation unique entre les codes postaux et les codes communes insee. Un code postal peut appartenir à plusieurs communes et une code commune insee peut appartenir plusieurs codes postaux.'
