@@ -892,7 +892,7 @@ sources:
             data_type: text
           - name: smet
             description: "Besoin en main d'œuvre pour le sous-bassin"
-            data_type: text
+            data_type: text;
 
       - name: datatourisme_place
         description: "List datourisme POI"
