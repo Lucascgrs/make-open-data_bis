@@ -104,17 +104,32 @@ models:
       data_type: geometry
       
 - name: infos_scot
-  description: 'Table synthétique rapportant les informations principales sur chaque SCoT (Schéma de Cohérence Territoriale) : code, siren, nom, population totale, contour géographique agrégé, nombre de communes.'
+  description: 'Table synthétique rapportant les informations principales sur chaque SCoT (Schéma de Cohérence Territoriale) : code, siren, nom, région, département (si unique), multi_dpt, population totale, contour géographique agrégé, nombre de communes.'
   columns:
     - name: scot_code
-      description: 'Code du SCoT'
+      description: 'Identifiant unique du SCoT'
       data_type: string
     - name: siren
-      description: 'SIREN SCoT'
+      description: 'SIREN du SCoT'
       data_type: string
     - name: scot_name
       description: 'Nom du SCoT'
       data_type: string
+    - name: code_region
+      description: 'Code de la region du SCoT'
+      data_type: string
+    - name: nom_region
+      description: 'Nom de la region du SCoT'
+      data_type: string
+    - name: code_departement
+      description: 'Code du departement si unique, NULL sinon'
+      data_type: string
+    - name: nom_departement
+      description: 'Nom du departement si unique, NULL sinon'
+      data_type: string
+    - name: multi_dpt
+      description: 'Booleen : true si le SCoT couvre plusieurs départements, false sinon'
+      data_type: boolean
     - name: population
       description: 'Population totale du SCoT'
       data_type: numeric
