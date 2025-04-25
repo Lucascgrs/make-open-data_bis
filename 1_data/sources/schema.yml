@@ -399,6 +399,214 @@ sources:
 
       - name: logement_2020_dev
         description: "Echantillon (Région Occitanie pour garder la cohérence des analyses) de logement_2020 pour faciliter les tests"
+        columns:
+          - name: COMMUNE
+            description: "Nom de la commune"
+            data_type: text
+          - name: ARM
+            description: "Code de l'arrondissement"
+            data_type: text
+          - name: IRIS
+            description: "Code IRIS de la zone géographique"
+            data_type: text
+          - name: ACHL
+            description: "Type de logement"
+            data_type: text
+          - name: AEMM
+            description: "Accès au logement en milieu marginal"
+            data_type: text
+          - name: AEMMR
+            description: "Accès au logement en milieu marginal - Répartition"
+            data_type: text
+          - name: AGEMEN8
+            description: "Âge moyen des ménages"
+            data_type: text
+          - name: ANEM
+            description: "Indicateur d'accès aux logements dans le cadre des nouvelles exigences"
+            data_type: text
+          - name: ANEMR
+            description: "Répartition par type d'accès aux logements"
+            data_type: text
+          - name: ASCEN
+            description: "Accessibilité aux logements pour personnes en situation de handicap"
+            data_type: text
+          - name: BAIN
+            description: "Indicateur d'accès aux logements avec baignoire"
+            data_type: text
+          - name: BATI
+            description: "Type de bâtiment"
+            data_type: text
+          - name: CATIRIS
+            description: "Catégorie IRIS pour le type de logement"
+            data_type: text
+          - name: CATL
+            description: "Catégorie des logements"
+            data_type: text
+          - name: CHAU
+            description: "Type de chauffage"
+            data_type: text
+          - name: CHFL
+            description: "Type de chauffage pour les logements"
+            data_type: text
+          - name: CHOS
+            description: "Conditions de chauffage pour les logements"
+            data_type: text
+          - name: CLIM
+            description: "Indicateur de présence de climatiseur"
+            data_type: text
+          - name: CMBL
+            description: "Présence de combles"
+            data_type: text
+          - name: CUIS
+            description: "Indicateur de présence de cuisine équipée"
+            data_type: text
+          - name: DEROU
+            description: "Indicateur de déroulement de l'enquête"
+            data_type: text
+          - name: DIPLM
+            description: "Indicateur de diplôme des résidents"
+            data_type: text
+          - name: EAU
+            description: "Présence d'eau dans le logement"
+            data_type: text
+          - name: EGOUL
+            description: "Indicateur d'accès à l'égout"
+            data_type: text
+          - name: ELEC
+            description: "Présence d'électricité dans le logement"
+            data_type: text
+          - name: EMPLM
+            description: "Emplacement du logement"
+            data_type: text
+          - name: GARL
+            description: "Présence d'un garage"
+            data_type: text
+          - name: HLML
+            description: "Indicateur de l'élévation de niveau"
+            data_type: text
+          - name: ILETUDM
+            description: "Indicateur de l'accès aux logements étudiants"
+            data_type: text
+          - name: ILTM
+            description: "Indicateur de l'accès aux logements temporaires"
+            data_type: text
+          - name: IMMIM
+            description: "Indicateur d'immobilier immobilier"
+            data_type: text
+          - name: INAIM
+            description: "Indicateur d'immobilier d'immeuble"
+            data_type: text
+          - name: INEEM
+            description: "Indicateur d'élément économique du logement"
+            data_type: text
+          - name: INP11M
+            description: "Indicateur de logement en zone d'inondation"
+            data_type: text
+          - name: INP15M
+            description: "Indicateur de logement en zone non réglementée"
+            data_type: text
+          - name: INP17M
+            description: "Indicateur de logement en zone montagneuse"
+            data_type: text
+          - name: INP19M
+            description: "Indicateur de logement en zone urbaine"
+            data_type: text
+          - name: INP24M
+            description: "Indicateur de logement en zone périurbaine"
+            data_type: text
+          - name: INP3M
+            description: "Indicateur de logement en zone mixte"
+            data_type: text
+          - name: INP60M
+            description: "Indicateur d'immobilier à faible coût"
+            data_type: text
+          - name: INP65M
+            description: "Indicateur d'immobilier à prix abordable"
+            data_type: text
+          - name: INP5M
+            description: "Indicateur de logements à faible coût"
+            data_type: text
+          - name: INP75M
+            description: "Indicateur de logements à prix moyen"
+            data_type: text
+          - name: INPAM
+            description: "Indicateur d'accès au logement"
+            data_type: text
+          - name: INPER
+            description: "Indicateur de permanence de l'accès au logement"
+            data_type: text
+          - name: INPER1
+            description: "Indicateur de permanence 1"
+            data_type: text
+          - name: INPER2
+            description: "Indicateur de permanence 2"
+            data_type: text
+          - name: INPOM
+            description: "Indicateur d'immobilier dans l'outre-mer"
+            data_type: text
+          - name: INPSM
+            description: "Indicateur de logement en milieu semi-rural"
+            data_type: text
+          - name: IPONDL
+            description: "Indicateur d'occupation dans les logements de la zone"
+            data_type: text
+          - name: IRANM
+            description: "Indicateur de logement en zone urbaine marginale"
+            data_type: text
+          - name: METRODOM
+            description: "Indicateur métropolitain et DOM"
+            data_type: text
+          - name: NBPI
+            description: "Nombre de personnes dans les logements"
+            data_type: text
+          - name: RECHM
+            description: "Indicateur de recherche de logement"
+            data_type: text
+          - name: REGION
+            description: "Région géographique"
+            data_type: text
+          - name: SANI
+            description: "Indicateur de sanitaire"
+            data_type: text
+          - name: SANIDOM
+            description: "Indicateur de sanitaire en DOM"
+            data_type: text
+          - name: SEXEM
+            description: "Indicateur de sexe"
+            data_type: text
+          - name: STAT_CONJM
+            description: "Statut de la personne"
+            data_type: text
+          - name: STOCD
+            description: "Indicateur de stockage des données"
+            data_type: text
+          - name: SURF
+            description: "Surface du logement"
+            data_type: text
+          - name: TACTM
+            description: "Type d'action de maintien du logement"
+            data_type: text
+          - name: TPM
+            description: "Type de mesure"
+            data_type: text
+          - name: TRANSM
+            description: "Type de transmission des données"
+            data_type: text
+          - name: TRIRIS
+            description: "Type de logement IRIS"
+            data_type: text
+          - name: TYPC
+            description: "Type de propriétaire"
+            data_type: text
+          - name: TYPL
+            description: "Type de logement"
+            data_type: text
+          - name: VOIT
+            description: "Présence de voiture"
+            data_type: text
+          - name: WC
+            description: "Présence de WC"
+            data_type: text
 
       - name: filosofi_commune_2021
         description: ""
@@ -577,12 +785,96 @@ sources:
 
       - name: shape_commune_2024
         description: ""
+        columns:
+          - name: ID
+            description: "Identifiant unique de la commune"
+            data_type: text
+          - name: NOM
+            description: "Nom de la commune"
+            data_type: text
+          - name: NOM_M
+            description: "Nom de la commune en version modifiée"
+            data_type: text
+          - name: INSEE_COM
+            description: "Code INSEE de la commune"
+            data_type: text
+          - name: STATUT
+            description: "Statut administratif de la commune"
+            data_type: text
+          - name: POPULATION
+            description: "Nombre d'habitants de la commune"
+            data_type: integer
+          - name: INSEE_CAN
+            description: "Code de la canton de la commune"
+            data_type: text
+          - name: INSEE_ARR
+            description: "Code de l'arrondissement de la commune"
+            data_type: text
+          - name: INSEE_DEP
+            description: "Code du département de la commune"
+            data_type: text
+          - name: INSEE_REG
+            description: "Code de la région de la commune"
+            data_type: text
+          - name: SIREN_EPCI
+            description: "Code SIREN de l'EPCI (Établissement Public de Coopération Intercommunale)"
+            data_type: text
+          - name: geometry
+            description: "Données géométriques représentant la commune"
+            data_type: geometry
 
       - name: shape_arrondissement_municipal_2024
         description: ""
+        columns:
+          - name: ID
+            description: "Identifiant unique de l'arrondissement municipal"
+            data_type: text
+          - name: NOM
+            description: "Nom de l'arrondissement municipal"
+            data_type: text
+          - name: NOM_M
+            description: "Nom du quartier ou de la section municipale"
+            data_type: text
+          - name: INSEE_ARR
+            description: "Code INSEE de l'arrondissement municipal"
+            data_type: text
+          - name: INSEE_COM
+            description: "Code INSEE de la commune"
+            data_type: text
+          - name: POPULATION
+            description: "Population de l'arrondissement municipal"
+            data_type: integer
+          - name: geometry
+            description: "Géométrie représentant l'arrondissement municipal"
+            data_type: geometry 
 
       - name: shape_iris_2024
         description: ""
+        columns:
+          - name: ID
+            description: "Identifiant unique de l'entrée"
+            data_type: text
+          - name: INSEE_COM
+            description: "Code INSEE de la commune"
+            data_type: text
+          - name: NOM_COM
+            description: "Nom de la commune"
+            data_type: text
+          - name: IRIS
+            description: "Code IRIS"
+            data_type: text
+          - name: CODE_IRIS
+            description: "Code unique de l'IRIS"
+            data_type: text
+          - name: NOM_IRIS
+            description: "Nom de l'IRIS"
+            data_type: text
+          - name: TYP_IRIS
+            description: "Type d'IRIS"
+            data_type: text
+          - name: geometry
+            description: "Géométrie associée à l'IRIS"
+            data_type: geometry
 
 
       - name: dvf_default
@@ -779,6 +1071,46 @@ sources:
 
       - name: seveso_2024
         description: "Localisation et dangerosité des sites SEVESO en France métropolitaine."
+        columns:
+          - name: longitude
+            description: "Coordonnée géographique en longitude"
+            data_type: text
+          - name: latitude
+            description: "Coordonnée géographique en latitude"
+            data_type: text
+          - name: identifier
+            description: "Identifiant unique du site"
+            data_type: text
+          - name: name
+            description: "Nom du site"
+            data_type: text
+          - name: localid
+            description: "Identifiant local du site"
+            data_type: text
+          - name: identifierscheme
+            description: "Schéma d'identification du site"
+            data_type: text
+          - name: streetname
+            description: "Nom de la rue où se trouve le site"
+            data_type: text
+          - name: postalcode
+            description: "Code postal du site"
+            data_type: text
+          - name: city
+            description: "Ville où se trouve le site"
+            data_type: text
+          - name: status
+            description: "Statut du site SEVESO"
+            data_type: text
+          - name: activity
+            description: "Activité principale du site"
+            data_type: text
+          - name: id_lex_aiot_seveso
+            description: "Identifiant unique dans le système LEX AIOT SEVESO"
+            data_type: text
+          - name: type
+            description: "Type du site SEVESO"
+            data_type: text
 
       - name: bpe_2023
         description: Base permanente des équipements (BPE) 2023
@@ -850,6 +1182,92 @@ sources:
 
       - name: bmo_2024
         description: Table besoin de main d'oeuvre
+        columns:
+          - name: annee
+            description: "Année de la donnée"
+            data_type: text
+          - name: Code_métier_BMO
+            description: "Code métier pour la BMO"
+            data_type: text
+          - name: Nom_métier_BMO
+            description: "Nom du métier pour la BMO"
+            data_type: text
+          - name: Famille_met
+            description: "Famille du métier"
+            data_type: text
+          - name: Lbl_fam_met
+            description: "Libellé de la famille de métier"
+            data_type: text
+          - name: REG
+            description: "Code de la région"
+            data_type: text
+          - name: NOM_REG
+            description: "Nom de la région"
+            data_type: text
+          - name: Dept
+            description: "Code du département"
+            data_type: text
+          - name: NomDept
+            description: "Nom du département"
+            data_type: text
+          - name: BE24
+            description: "Nombre de besoins estimés en 2024"
+            data_type: text
+          - name: NOMBE24
+            description: "Nom du besoin estimé en 2024"
+            data_type: text
+          - name: met
+            description: "Métier"
+            data_type: text
+          - name: xmet
+            description: "Métier transversal"
+            data_type: text
+          - name: smet
+            description: "Sous-métier"
+            data_type: text
 
       - name: datatourisme_place
         description: "List datourisme POI"
+        columns:
+          - name: Nom_du_POI
+            description: "Nom du point d'intérêt"
+            data_type: text
+          - name: Categories_de_POI
+            description: "Catégories des points d'intérêt"
+            data_type: text
+          - name: Latitude
+            description: "Latitude géographique du POI"
+            data_type: text
+          - name: Longitude
+            description: "Longitude géographique du POI"
+            data_type: text
+          - name: Adresse_postale
+            description: "Adresse postale du POI"
+            data_type: text
+          - name: Code_postal_et_commune
+            description: "Code postal et commune associée au POI"
+            data_type: text
+          - name: Covid19_mesures_specifiques
+            description: "Mesures spécifiques liées au Covid-19 pour le POI"
+            data_type: text
+          - name: Createur_de_la_donnee
+            description: "Créateur des données du POI"
+            data_type: text
+          - name: SIT_diffuseur
+            description: "Diffuseur du SIT (Système d'Information Touristique)"
+            data_type: text
+          - name: Date_de_mise_a_jour
+            description: "Date de la dernière mise à jour du POI"
+            data_type: text
+          - name: Contacts_du_POI
+            description: "Contacts associés au POI"
+            data_type: text
+          - name: Classements_du_POI
+            description: "Classements ou évaluations du POI"
+            data_type: text
+          - name: Description
+            description: "Description détaillée du POI"
+            data_type: text
+          - name: URI_ID_du_POI
+            description: "Identifiant unique du POI sous forme d'URI"
+            data_type: text
