@@ -109,6 +109,9 @@ models:
     - name: scot_code
       description: 'Identifiant unique du SCoT'
       data_type: string
+      tests:
+          - unique
+          - not_null
     - name: siren
       description: 'SIREN du SCoT'
       data_type: string
