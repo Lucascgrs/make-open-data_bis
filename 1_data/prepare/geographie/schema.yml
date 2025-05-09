@@ -49,11 +49,11 @@ models:
       - name: commune_contour
         description: "Contour géographique de la commune fourni par les shapefiles IGN (geometry)"
         data_type: geometry
-      - name: SCoT
-        description: "Nom du Schéma de Cohérence Territoriale (SCoT) auquel la commune est rattachée"
+      - name: code_scot
+        description: "Code SIREN de l'Établissement Public de Coopération Intercommunale (EPCI) auquel le SCoT est rattaché"
         data_type: string
-      - name: "SIREN EPCI"
-        description: "Code SIREN de l'Établissement Public de Coopération Intercommunale (EPCI) auquel la commune est rattachée"
+      - name: nom_scot
+        description: "Nom du Schéma de Cohérence Territoriale (SCoT) auquel la commune est rattachée"
         data_type: string
 
   - name: infos_postes
