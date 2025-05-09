@@ -2,9 +2,8 @@
 
 with filtre_cog_communes as (
     select * 
-    from {{ source('sources', 'cog_communes')}} as cog_communes     
+    from {{ source('sources', 'cog_communes') }} as cog_communes     
     where cog_communes.type in ('commune-actuelle', 'arrondissement-municipal')
-
 ), denomalise_cog as (
     select
         LPAD(CAST(filtre_cog_communes.code as TEXT), 5, '0') as code_commune,
@@ -20,34 +19,29 @@ with filtre_cog_communes as (
         cog_regions.nom as nom_region
 
     from filtre_cog_communes
-    left join {{ source('sources', 'cog_arrondissements')}}  cog_arrondissements on cog_arrondissements.code = filtre_cog_communes.arrondissement
-    left join {{ source('sources', 'cog_departements')}}  cog_departements on cog_departements.code = filtre_cog_communes.departement
-    left join {{ source('sources', 'cog_regions')}}  cog_regions on cog_regions.code = filtre_cog_communes.region  
-
+    left join {{ source('sources', 'cog_arrondissements') }} cog_arrondissements on cog_arrondissements.code = filtre_cog_communes.arrondissement
+    left join {{ source('sources', 'cog_departements') }} cog_departements on cog_departements.code = filtre_cog_communes.departement
+    left join {{ source('sources', 'cog_regions') }} cog_regions on cog_regions.code = filtre_cog_communes.region  
 ), laposte_gps as (
-    select
+    select distinct
         LPAD(CAST(cog_poste.code_commune_insee AS TEXT), 5, '0') as code_commune,
-        AVG(CAST(SPLIT_PART(cog_poste._geopoint, ',', 1) AS FLOAT)) as commune_latitude,
-        AVG(CAST(SPLIT_PART(cog_poste._geopoint, ',', 2) AS FLOAT)) as commune_longitude
-    from {{ source('sources', 'cog_poste')}}  as cog_poste
-    group by code_commune
-
+        CAST(SPLIT_PART(cog_poste._geopoint, ',', 1) AS FLOAT) as commune_latitude,
+        CAST(SPLIT_PART(cog_poste._geopoint, ',', 2) AS FLOAT) as commune_longitude
+    from {{ source('sources', 'cog_poste') }} as cog_poste
 ), ign_shapes as (
     select "INSEE_COM" as code_commune,
            geometry as commune_contour 
-    from {{ source('sources', 'shape_commune_2024')}}
+    from {{ source('sources', 'shape_commune_2024') }}
     union
-    select  "INSEE_ARM" as code_commune,
-            geometry as commune_contour
-    from {{ source('sources', 'shape_arrondissement_municipal_2024')}}
-    
+    select "INSEE_ARM" as code_commune,
+           geometry as commune_contour
+    from {{ source('sources', 'shape_arrondissement_municipal_2024') }}
 ), scot_data as (
-    select distinct on (code_commune)
+    select distinct
         LPAD(CAST(commune_scot."INSEE commune" AS TEXT), 5, '0') as code_commune,
-        "SCoT",
-        "SIREN EPCI"
-    from {{ source('sources', 'communes_to_scot')}} as commune_scot
-    order by code_commune, "SCoT"
+        "SCoT" as nom_scot,
+        "SIREN EPCI" as code_scot
+    from {{ source('sources', 'communes_to_scot') }} as commune_scot
 )
 
 select
@@ -56,9 +50,10 @@ select
     laposte_gps.commune_longitude,
     ST_SetSRID(ST_MakePoint(laposte_gps.commune_longitude, laposte_gps.commune_latitude), 4326) as commune_centre_geopoint,
     ign_shapes.commune_contour,
-    scot_data."SCoT",
-    scot_data."SIREN EPCI"
+    scot_data.code_scot,
+    scot_data.nom_scot
+
 from denomalise_cog
 left join laposte_gps on denomalise_cog.code_commune = laposte_gps.code_commune
 left join ign_shapes on denomalise_cog.code_commune = ign_shapes.code_commune
-left join scot_data on denomalise_cog.code_commune = scot_data.code_commune
+left join scot on denomalise_cog.code_commune = scot.code_commune
