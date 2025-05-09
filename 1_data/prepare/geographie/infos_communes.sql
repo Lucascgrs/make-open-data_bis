@@ -56,4 +56,4 @@ select
 from denomalise_cog
 left join laposte_gps on denomalise_cog.code_commune = laposte_gps.code_commune
 left join ign_shapes on denomalise_cog.code_commune = ign_shapes.code_commune
-left join scot on denomalise_cog.code_commune = scot_data.code_commune
+left join scot_data on denomalise_cog.code_commune = scot_data.code_commune
