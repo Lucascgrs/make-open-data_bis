@@ -14,7 +14,7 @@ with filtre_cog_communes as (
         filtre_cog_communes.region as code_region,
         filtre_cog_communes.population as population,
         filtre_cog_communes.zone as code_zone,
-
+        
         cog_arrondissements.nom as nom_arrondissement,
         cog_departements.nom as nom_departement,
         cog_regions.nom as nom_region
@@ -23,21 +23,22 @@ with filtre_cog_communes as (
     left join {{ source('sources', 'cog_arrondissements')}}  cog_arrondissements on cog_arrondissements.code = filtre_cog_communes.arrondissement
     left join {{ source('sources', 'cog_departements')}}  cog_departements on cog_departements.code = filtre_cog_communes.departement
     left join {{ source('sources', 'cog_regions')}}  cog_regions on cog_regions.code = filtre_cog_communes.region  
-    
+
 ), laposte_gps as (
-    select DISTINCT
+    select
         LPAD(CAST(cog_poste.code_commune_insee AS TEXT), 5, '0') as code_commune,
-        CAST(SPLIT_PART(cog_poste._geopoint, ',', 1) AS FLOAT) as commune_latitude,
-        CAST(SPLIT_PART(cog_poste._geopoint, ',', 2) AS FLOAT) as commune_longitude
+        AVG(CAST(SPLIT_PART(cog_poste._geopoint, ',', 1) AS FLOAT)) as commune_latitude,
+        AVG(CAST(SPLIT_PART(cog_poste._geopoint, ',', 2) AS FLOAT)) as commune_longitude
     from {{ source('sources', 'cog_poste')}}  as cog_poste
+    group by code_commune
 
 ), ign_shapes as (
     select "INSEE_COM" as code_commune,
            geometry as commune_contour 
     from {{ source('sources', 'shape_commune_2024')}}
     union
-    select "INSEE_ARM" as code_commune,
-           geometry as commune_contour
+    select  "INSEE_ARM" as code_commune,
+            geometry as commune_contour
     from {{ source('sources', 'shape_arrondissement_municipal_2024')}}
     
 ), scot_data as (
@@ -53,7 +54,7 @@ select
     denomalise_cog.*,
     laposte_gps.commune_latitude,
     laposte_gps.commune_longitude,
-    ST_SetSRID(ST_MakePoint(laposte_gps.commune_latitude, laposte_gps.commune_longitude), 4326) as commune_centre_geopoint,
+    ST_SetSRID(ST_MakePoint(laposte_gps.commune_longitude, laposte_gps.commune_latitude), 4326) as commune_centre_geopoint,
     ign_shapes.commune_contour,
     scot_data."SCoT",
     scot_data."SIREN EPCI"
