@@ -37,12 +37,17 @@ with filtre_cog_communes as (
            geometry as commune_contour
     from {{ source('sources', 'shape_arrondissement_municipal_2024') }}
 ), scot_data as (
-    select distinct
+    select distinct on (LPAD(CAST(commune_scot."INSEE commune" AS TEXT), 5, '0'))
         LPAD(CAST(commune_scot."INSEE commune" AS TEXT), 5, '0') as code_commune,
         "SCoT" as nom_scot,
         "SIREN EPCI" as code_scot
     from {{ source('sources', 'communes_to_scot') }} as commune_scot
+    where "SCoT" is not null
+    order by LPAD(CAST(commune_scot."INSEE commune" AS TEXT), 5, '0'),
+             case when "SCoT opposable (Oui/Non)" = 'Oui' then 0 else 1 end,
+             "SCoT"
 )
+
 
 select
     denomalise_cog.*,
