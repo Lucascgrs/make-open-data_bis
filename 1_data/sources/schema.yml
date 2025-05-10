@@ -1184,16 +1184,16 @@ sources:
         description: Table besoin de main d'oeuvre
         columns:
           - name: annee
-            description: "Année de la donnée"
+            description: "Année des données"
             data_type: text
           - name: Code_métier_BMO
-            description: "Code métier pour la BMO"
+            description: "Code du métier"
             data_type: text
           - name: Nom_métier_BMO
-            description: "Nom du métier pour la BMO"
+            description: "Nom du métier"
             data_type: text
           - name: Famille_met
-            description: "Famille du métier"
+            description: "Code de la famille de métier"
             data_type: text
           - name: Lbl_fam_met
             description: "Libellé de la famille de métier"
@@ -1211,63 +1211,24 @@ sources:
             description: "Nom du département"
             data_type: text
           - name: BE24
-            description: "Nombre de besoins estimés en 2024"
+            description: "Code du bassin d'emploi 2024"
             data_type: text
           - name: NOMBE24
-            description: "Nom du besoin estimé en 2024"
+            description: "Nom du bassin d'emploi 2024"
             data_type: text
           - name: met
-            description: "Métier"
+            description: "Besoin en main d'œuvre pour le bassin"
             data_type: text
           - name: xmet
-            description: "Métier transversal"
+            description: "Variation du besoin en main d'œuvre"
             data_type: text
           - name: smet
-            description: "Sous-métier"
-            data_type: text
+            description: "Besoin en main d'œuvre pour le sous-bassin"
+            data_type: text;
 
       - name: datatourisme_place
         description: "List datourisme POI"
-        columns:
-          - name: Nom_du_POI
-            description: "Nom du point d'intérêt"
-            data_type: text
-          - name: Categories_de_POI
-            description: "Catégories des points d'intérêt"
-            data_type: text
-          - name: Latitude
-            description: "Latitude géographique du POI"
-            data_type: text
-          - name: Longitude
-            description: "Longitude géographique du POI"
-            data_type: text
-          - name: Adresse_postale
-            description: "Adresse postale du POI"
-            data_type: text
-          - name: Code_postal_et_commune
-            description: "Code postal et commune associée au POI"
-            data_type: text
-          - name: Covid19_mesures_specifiques
-            description: "Mesures spécifiques liées au Covid-19 pour le POI"
-            data_type: text
-          - name: Createur_de_la_donnee
-            description: "Créateur des données du POI"
-            data_type: text
-          - name: SIT_diffuseur
-            description: "Diffuseur du SIT (Système d'Information Touristique)"
-            data_type: text
-          - name: Date_de_mise_a_jour
-            description: "Date de la dernière mise à jour du POI"
-            data_type: text
-          - name: Contacts_du_POI
-            description: "Contacts associés au POI"
-            data_type: text
-          - name: Classements_du_POI
-            description: "Classements ou évaluations du POI"
-            data_type: text
-          - name: Description
-            description: "Description détaillée du POI"
-            data_type: text
-          - name: URI_ID_du_POI
-            description: "Identifiant unique du POI sous forme d'URI"
-            data_type: text
+
+      - name: communes_to_scot
+        description: "File mapping top what Scot blongs each commune"
+
