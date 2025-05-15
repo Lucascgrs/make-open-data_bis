@@ -1,0 +1,35 @@
+version: 2
+
+models:
+
+- name: habitat_communes
+  description: Rapporte les réponses sur les habitats du recensement agrégées à l'échelle de la commune.
+  columns:
+
+  - name:
+    data_type:
+    description:
+
+- name: habitat_departements
+  description: Rapporte les réponses sur les habitats du recensement agrégées à l'échelle du département.
+  columns:
+
+  - name:
+    data_type:
+    description:
+
+- name: habitat_EPCI
+  description: Rapporte les réponses sur les habitats du recensement agrégées à l'échelle de l'EPCI.
+  columns:
+
+  - name:
+    data_type:
+    description:
+
+- name: habitat_SCoT
+  description: Rapporte les réponses sur les habitats du recensement agrégées à l'échelle de la SCoT.
+  columns:
+
+  - name:
+    data_type:
+    description:
