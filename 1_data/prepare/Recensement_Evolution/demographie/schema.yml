@@ -4,32 +4,15 @@ models:
 
 - name: demographie_communes_evolution
   description: Rapporte les réponses sur la démographie du recensement agrégées à l'échelle de la commune.
-  columns:
 
-  - name:
-    data_type:
-    description:
 
 - name: demographie_departements_evolution
   description: Rapporte les réponses sur la démographie du recensement agrégées à l'échelle du département.
-  columns:
 
-  - name:
-    data_type:
-    description:
 
 - name: demographie_EPCI_evolution
   description: Rapporte les réponses sur la démographie du recensement agrégées à l'échelle de l'EPCI.
-  columns:
 
-  - name:
-    data_type:
-    description:
 
 - name: demographie_SCoT_evolution
   description: Rapporte les réponses sur la démographie du recensement agrégées à l'échelle de la SCoT.
-  columns:
-
-  - name:
-    data_type:
-    description:

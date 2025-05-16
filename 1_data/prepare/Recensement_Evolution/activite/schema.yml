@@ -4,32 +4,14 @@ models:
 
 - name: activite_communes_evolution
   description: Rapporte les réponses sur l'activité du recensement agrégées à l'échelle de la commune.
-  columns:
-
-  - name:
-    data_type:
-    description:
 
 - name: activite_departements
   description: Rapporte les réponses sur l'activité du recensement agrégées à l'échelle du département.
-  columns:
 
-  - name:
-    data_type:
-    description:
 
 - name: activite_EPCI_evolution
   description: Rapporte les réponses sur l'activité du recensement agrégées à l'échelle de l'EPCI.
-  columns:
 
-  - name:
-    data_type:
-    description:
 
 - name: activite_SCoT_evolution
   description: Rapporte les réponses sur l'activité du recensement agrégées à l'échelle de la SCoT.
-  columns:
-
-  - name:
-    data_type:
-    description:
