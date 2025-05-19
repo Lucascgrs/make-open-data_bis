@@ -46,6 +46,7 @@ with filtre_cog_communes as (
         "SCoT",
         "SIREN EPCI"
     from {{ source('sources', 'communes_to_scot')}} as commune_scot
+    order by code_commune, "SCoT"
 )
 
 select
