@@ -41,8 +41,8 @@ with filtre_cog_communes as (
             geometry as commune_contour
     from {{ source('sources', 'shape_arrondissement_municipal_2024')}}
 ), scot_data as (
-    select
-        DISTINCT(LPAD(CAST(commune_scot."INSEE commune" AS TEXT), 5, '0')) as code_commune,
+    select distinct
+        LPAD(CAST(commune_scot."INSEE commune" AS TEXT), 5, '0') as code_commune,
         "SCoT",
         "SIREN EPCI"
     from {{ source('sources', 'communes_to_scot')}} as commune_scot
