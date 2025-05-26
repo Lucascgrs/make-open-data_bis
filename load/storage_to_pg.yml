@@ -289,3 +289,8 @@ communes_to_scot:
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
+
+base_cc_carac_emploi_2015:
+  storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/base-cc-carac-emploi/base-cc-carac-emploi-2015.xls"
+  db_schema: "sources"
+  file_format: 'xls'
