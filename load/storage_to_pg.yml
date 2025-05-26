@@ -507,259 +507,259 @@ base_cc_logement_2021:
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_bdfdom_2017_DEP:
+cc_bdfdom_2017_dep:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_bdfdom/cc_bdfdom_2017_DEP.csv"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_bdfdom_2017_REG:
+cc_bdfdom_2017_reg:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_bdfdom/cc_bdfdom_2017_REG.csv"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2017_ARR:
+cc_filosofi_2017_arr:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2017_ARR.CSV"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2017_AU2010:
+cc_filosofi_2017_au2010:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2017_AU2010.CSV"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2017_COM:
+cc_filosofi_2017_com:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2017_COM.CSV"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2017_DEP:
+cc_filosofi_2017_dep:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2017_DEP.CSV"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2017_EPCI:
+cc_filosofi_2017_epci:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2017_EPCI.CSV"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2017_METRO:
+cc_filosofi_2017_metro:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2017_METRO.CSV"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2017_REG:
+cc_filosofi_2017_reg:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2017_REG.CSV"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2017_UU2010:
+cc_filosofi_2017_uu2010:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2017_UU2010.CSV"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2017_ZE2010:
+cc_filosofi_2017_ze2010:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2017_ZE2010.CSV"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2018_AAV2020_geo2021:
+cc_filosofi_2018_aav2020_geo2021:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2018_AAV2020-geo2021.CSV"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2018_ARR_geo2021:
+cc_filosofi_2018_arr_geo2021:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2018_ARR-geo2021.CSV"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2018_COM_geo2021:
+cc_filosofi_2018_com_geo2021:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2018_COM-geo2021.CSV"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2018_DEP_geo2021:
+cc_filosofi_2018_dep_geo2021:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2018_DEP-geo2021.CSV"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2018_EPCI_geo2021:
+cc_filosofi_2018_epci_geo2021:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2018_EPCI-geo2021.CSV"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2018_METRO_geo2021:
+cc_filosofi_2018_metro_geo2021:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2018_METRO-geo2021.CSV"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2018_REG_geo2021:
+cc_filosofi_2018_reg_geo2021:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2018_REG-geo2021.CSV"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2018_UU2020_geo2021:
+cc_filosofi_2018_uu2020_geo2021:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2018_UU2020-geo2021.CSV"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2018_ZE2020_geo2021:
+cc_filosofi_2018_ze2020_geo2021:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2018_ZE2020-geo2021.CSV"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2019_AAV2020:
+cc_filosofi_2019_aav2020:
   storage_path: "https://make_open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2019_AAV2020.csv"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2019_ARR:
+cc_filosofi_2019_arr:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2019_ARR.csv"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2019_COM:
+cc_filosofi_2019_com:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2019_COM.csv"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2019_CTCD:
+cc_filosofi_2019_ctcd:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2019_CTCD.csv"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2019_DEP:
+cc_filosofi_2019_dep:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2019_DEP.csv"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
   
-cc_filosofi_2019_EPCI:
+cc_filosofi_2019_epci:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2019_EPCI.csv"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2019_EPT:
+cc_filosofi_2019_ept:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2019_EPT.csv"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2019_METRO:
+cc_filosofi_2019_metro:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2019_METRO.csv"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2019_REG:
+cc_filosofi_2019_reg:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2019_REG.csv"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2019_UU2020:
+cc_filosofi_2019_uu2020:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2019_UU2020.csv"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2019_ZE2020:
+cc_filosofi_2019_ze2020:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2019_ZE2020.csv"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
   
-cc_filosofi_2020_AAV2020:
+cc_filosofi_2020_aav2020:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2020_AAV2020.csv"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2020_ARR:
+cc_filosofi_2020_arr:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2020_ARR.csv"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2020_BV2022:
+cc_filosofi_2020_bv2022:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2020_BV2022.csv"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2020_COM:
+cc_filosofi_2020_com:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2020_COM.csv"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2020_CTCD:
+cc_filosofi_2020_ctcd:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2020_CTCD.csv"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2020_DEP:
+cc_filosofi_2020_dep:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2020_DEP.csv"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2020_EPCI:
+cc_filosofi_2020_epci:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2020_EPCI.csv"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2020_EPT:
+cc_filosofi_2020_ept:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2020_EPT.csv"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2020_METRO:
+cc_filosofi_2020_metro:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2020_METRO.csv"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2020_REG:
+cc_filosofi_2020_reg:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2020_REG.csv"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2020_UU2020:
+cc_filosofi_2020_uu2020:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2020_UU2020.csv"
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-cc_filosofi_2020_ZE2020:
+cc_filosofi_2020_ze2020:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/cc_filosofi/cc_filosofi_2020_ZE2020.csv"
   db_schema: "sources"
   file_format: 'csv'
