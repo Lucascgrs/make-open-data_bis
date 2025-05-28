@@ -6,26 +6,23 @@
 with
 {% for annee in annees %}
 -- Deux derniers chiffres de l'année (ex: 18 pour 2018)
-{% set suffix = (annee|string)|slice(-2, 2) %}
+{% set suffix = (annee|string)[2:] %}
+{% set relation = source('sources', 'base_cc_evol_struct_pop_' ~ annee) %}
+
+{% set cols = dbt_utils.get_filtered_columns_in_relation(
+    relation=relation,
+    include=['^.{{ suffix }}'],  -- match 2e et 3e caractère = année
+    exclude=[]
+) %}
 
 base_{{ annee }} as (
-
-    {% set cols = dbt_utils.get_filtered_columns_in_source(
-        'sources',
-        'base_cc_evol_struct_pop_' ~ annee,
-        "substring(column_name from 2 for 2) = '" ~ suffix ~ "' or column_name = 'code_commune'"
-    ) %}
-
     select
+        code_commune,
         {% for col in cols %}
-            {% if col != 'code_commune' %}
-                {{ col }} as {{ col[3:] }}{% if not loop.last %},{% endif %}
-            {% else %}
-                {{ col }}{% if not loop.last %},{% endif %}
-            {% endif %}
+            {{ col }} as {{ col[3:] }}{% if not loop.last %},{% endif %}
         {% endfor %},
         {{ annee }} as annee
-    from {{ source('sources', 'base_cc_evol_struct_pop_' ~ annee) }}
+    from {{ relation }}
 ){% if not loop.last %},{% endif %}
 
 {% endfor %}
