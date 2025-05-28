@@ -2,8 +2,10 @@
 
 {% set annees = [2016, 2017, 2018, 2019, 2020, 2021] %}
 
--- Un seul bloc WITH
+-- Bloc WITH
 with
+
+-- Référentiel des communes
 cog_communes as (
   select
     code as code_commune,
@@ -13,19 +15,31 @@ cog_communes as (
   from {{ source('sources', 'cog_communes') }}
 ),
 
+-- Tables annuelles transformées
 {% for annee in annees %}
 base_{{ annee }} as (
-{{ rename_columns_by_year(
+    {{ rename_columns_by_year(
         source('sources', 'base_cc_evol_struct_pop_' ~ annee),
         annee,
         ['code_commune']
     ) }}
 ){% if not loop.last %},{% endif %}
-{% endfor %}
+{% endfor %},
 
--- Requête principale
-select * from base_2016
-{% for annee in annees[1:] %}
-union all
-select * from base_{{ annee }}
-{% endfor %}
+-- Union de toutes les années
+base_unifiee as (
+    select * from base_2016
+    {% for annee in annees[1:] %}
+    union all
+    select * from base_{{ annee }}
+    {% endfor %}
+)
+
+-- Requête finale avec enrichissement géographique
+select
+    b.*,
+    c.nom_commune,
+    c.code_departement,
+    c.code_region
+from base_unifiee b
+left join cog_communes c using (code_commune)
