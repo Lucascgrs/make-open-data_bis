@@ -10,9 +10,13 @@
 
         {% if colname in colonnes_fix %}
             {% do selected_columns.append(colname) %}
-        {% elif colname.startswith('P' ~ suffix ~ '_') %}
-            {% set new_name = colname[4:] %}
-            {% do selected_columns.append(colname ~ ' as ' ~ new_name) %}
+
+        {% elif colname.startswith('P' ~ suffix ~ '_') 
+            or colname.startswith('C' ~ suffix ~ '_') %}
+
+            {% set new_name = colname[0] ~ colname[4:] %}
+            {% do selected_columns.append('"' ~ colname ~ '" as ' ~ new_name) %}
+
         {% endif %}
     {% endfor %}
 
