@@ -21,7 +21,7 @@ base_{{ annee }} as (
     {{ rename_columns_by_year(
         source('sources', 'base_cc_evol_struct_pop_' ~ annee),
         annee,
-        ['code_commune']
+        ['CODGEO']
     ) }}
 ){% if not loop.last %},{% endif %}
 {% endfor %},
@@ -42,4 +42,5 @@ select
     c.code_departement,
     c.code_region
 from base_unifiee b
-left join cog_communes c using (code_commune)
+
+left join cog_communes c on b.CODGEO = c.code_commune
