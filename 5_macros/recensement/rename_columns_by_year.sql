@@ -9,7 +9,7 @@
         {% set colname = col.name %}
 
         {% if colname in colonnes_fix %}
-            {% do selected_columns.append(colname) %}
+            {% do selected_columns.append('"' ~ colname ~ '" as "' ~ colname ~ '"') %}
 
         {% elif colname.startswith('P' ~ suffix ~ '_') 
             or colname.startswith('C' ~ suffix ~ '_') %}

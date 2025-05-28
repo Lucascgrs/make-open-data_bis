@@ -43,4 +43,4 @@ select
     c.code_region
 from base_unifiee b
 
-left join cog_communes c on b.CODGEO = c.code_commune
+left join cog_communes c on b."CODGEO" = c.code_commune
