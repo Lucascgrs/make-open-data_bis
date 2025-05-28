@@ -15,10 +15,11 @@ cog_communes as (
 
 {% for annee in annees %}
 base_{{ annee }} as (
-    select
-        *,
-        {{ annee }} as annee
-    from {{ source('sources', 'base_cc_evol_struct_pop_' ~ annee) }}
+{{ rename_columns_by_year(
+        source('sources', 'base_cc_evol_struct_pop_' ~ annee),
+        annee,
+        ['code_commune']
+    ) }}
 ){% if not loop.last %},{% endif %}
 {% endfor %}
 
