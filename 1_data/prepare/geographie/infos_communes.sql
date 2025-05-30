@@ -43,10 +43,10 @@ with filtre_cog_communes as (
 ), scot_data as (
     select distinct on (code_commune)
         LPAD(CAST(commune_scot."INSEE commune" AS TEXT), 5, '0') as code_commune,
-        "SCoT",
-        "SIREN EPCI"
+        "SCoT" as nom_scot,
+        "id" as code_scot
     from {{ source('sources', 'communes_to_scot')}} as commune_scot
-    order by code_commune, "SCoT"
+    order by code_commune, nom_scot
 )
 
 select
@@ -55,8 +55,8 @@ select
     laposte_gps.commune_longitude,
     ST_SetSRID(ST_MakePoint(laposte_gps.commune_latitude, laposte_gps.commune_longitude), 4326) as commune_centre_geopoint,
     ign_shapes.commune_contour,
-    scot_data."SCoT",
-    scot_data."SIREN EPCI"
+    scot_data.nom_scot,
+    scot_data.code_scot
 from denomalise_cog
 left join laposte_gps on denomalise_cog.code_commune = laposte_gps.code_commune
 left join ign_shapes on denomalise_cog.code_commune = ign_shapes.code_commune
