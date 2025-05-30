@@ -104,41 +104,41 @@ models:
       data_type: geometry
       
 - name: infos_scot
-  description: 'Table synthétique rapportant les informations principales sur chaque SCoT (Schéma de Cohérence Territoriale) : code, siren, nom, région, département (si unique), multi_dpt, population totale, contour géographique agrégé, nombre de communes.'	
-  columns:	
-    - name: scot_code	
-      description: 'Identifiant unique du SCoT'	
-      data_type: string	
-      tests:	
-          - unique	
-          - not_null	
-    - name: siren	
-      description: 'SIREN du SCoT'	
-      data_type: string	
-    - name: scot_name	
-      description: 'Nom du SCoT'	
-      data_type: string	
-    - name: code_region	
-      description: 'Code de la region du SCoT'	
-      data_type: string	
-    - name: nom_region	
-      description: 'Nom de la region du SCoT'	
-      data_type: string	
-    - name: code_departement	
-      description: 'Code du departement si unique, NULL sinon'	
-      data_type: string	
-    - name: nom_departement	
-      description: 'Nom du departement si unique, NULL sinon'	
-      data_type: string	
-    - name: multi_dpt	
-      description: 'Booleen : true si le SCoT couvre plusieurs départements, false sinon'	
-      data_type: boolean	
-    - name: population	
-      description: 'Population totale du SCoT'	
-      data_type: numeric	
-    - name: contour	
-      description: 'Contour géographique du SCoT (union des contours des communes)'	
-      data_type: geometry	
-    - name: number_of_communes	
-      description: 'Nombre de communes dans le SCoT'	
+  description: 'Table synthétique rapportant les informations principales sur chaque SCoT (Schéma de Cohérence Territoriale) : code, siren, nom, région, département (si unique), multi_dpt, population totale, contour géographique agrégé, nombre de communes.'
+  columns:
+    - name: scot_code
+      description: 'Identifiant unique du SCoT'
+      data_type: string
+      tests:
+          - unique
+          - not_null
+    - name: siren
+      description: 'SIREN du SCoT'
+      data_type: string
+    - name: scot_name
+      description: 'Nom du SCoT'
+      data_type: string
+    - name: code_region
+      description: 'Code de la region du SCoT'
+      data_type: string
+    - name: nom_region
+      description: 'Nom de la region du SCoT'
+      data_type: string
+    - name: code_departement
+      description: 'Code du departement si unique, NULL sinon'
+      data_type: string
+    - name: nom_departement
+      description: 'Nom du departement si unique, NULL sinon'
+      data_type: string
+    - name: multi_dpt
+      description: 'Booleen : true si le SCoT couvre plusieurs départements, false sinon'
+      data_type: boolean
+    - name: population
+      description: 'Population totale du SCoT'
+      data_type: numeric
+    - name: contour
+      description: 'Contour géographique du SCoT (union des contours des communes)'
+      data_type: geometry
+    - name: number_of_communes
+      description: 'Nombre de communes dans le SCoT'
       data_type: integer
