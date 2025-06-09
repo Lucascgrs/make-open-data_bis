@@ -44,7 +44,7 @@ with filtre_cog_communes as (
     select distinct on (code_commune)
         LPAD(CAST(commune_scot."INSEE commune" AS TEXT), 5, '0') as code_commune,
         "SCoT" as nom_scot,
-        "id" as code_scot
+        "id SCoT" as code_scot
     from {{ source('sources', 'communes_to_scot')}} as commune_scot
     order by code_commune, nom_scot
 )
