@@ -764,3 +764,9 @@ cc_filosofi_2020_ze2020:
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
+
+champs_disponibles:
+  storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/champs_disponibles.csv"
+  db_schema: "sources"
+  file_format: 'csv'
+  csv_delimiter: ";"
