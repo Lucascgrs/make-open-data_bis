@@ -68,16 +68,13 @@ fam_men_{{ annee }} as (
 
 select
     coalesce(rp_population.code_commune,
-             rp_familles_menages.code_commune) AS code_commune,
+             rp_familles_menages.code_commune) as code_commune,
 
-    -- Colonnes Population 2016-2021
-    {% for annee in annees %}
-        {{ generate_demographie_columns_year(pop_champs, annee, 'rp_population') }},{% endfor %}
+    -- ---------- Colonnes Population 2016-2021 --------------------------
+    {{ list_alias_columns(pop_champs, annees, 'rp_population') }},
 
-    -- Colonnes Familles/Ménages 2016-2021
-    {% for annee in annees %}
-        {{ generate_demographie_columns_year(fam_champs, annee, 'rp_familles_menages') }}{% if not loop.last %},{% endif %}
-    {% endfor %}
+    -- ---------- Colonnes Familles/Ménages 2016-2021 --------------------
+    {{ list_alias_columns(fam_champs, annees, 'rp_familles_menages') }}
 
 from rp_population
 full outer join rp_familles_menages using (code_commune);

@@ -21,3 +21,14 @@
     {% endfor %}
     {{ cols | join(',\n        ') }}
 {% endmacro %}
+
+{% macro list_alias_columns(champs, annees, table_alias) %}
+    {# Retourne table_alias.clef_json_annee pour chaque couple #}
+    {% set cols = [] %}
+    {% for c in champs %}
+        {% for annee in annees %}
+            {% do cols.append(table_alias ~ '.' ~ c.clef_json ~ '_' ~ annee) %}
+        {% endfor %}
+    {% endfor %}
+    {{ cols | join(',\n    ') }}
+{% endmacro %}
