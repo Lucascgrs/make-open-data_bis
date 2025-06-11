@@ -2,13 +2,16 @@
 
 {% set annees = range(2016, 2022) %}        {# 2016‒2021 inclus #}
 
-{% set table_src = source('sources', 'champs_categorises') %}
-{% set sql = '
-    SELECT champ_insee, clef_json, base_source
-    FROM ' ~ table_src ~ '
-    WHERE categorie = ''demographie''
-' %}
-{% set champs_raw = get_query_results(sql) %}
+{% if execute %}
+    {% set champs_raw_table = run_query(
+        'SELECT champ_insee, clef_json, base_source ' ~
+        'FROM ' ~ source('sources', 'champs_categorises') ~ ' ' ~
+        'WHERE categorie = ''demographie'''
+    ) %}
+    {% set champs_raw = champs_raw_table.rows | list %}
+{% else %}
+    {% set champs_raw = [] %}
+{% endif %}
 
 
 {% set pop_champs = [] %}
