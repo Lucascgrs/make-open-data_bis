@@ -2,11 +2,16 @@
 
 {% set annees = range(2016, 2022) %}        {# 2016‒2021 inclus #}
 
-{% set champs_raw = dbt_utils.get_query_results("""
-    SELECT champ_insee, clef_json, base_source
-      FROM {{ source('sources', 'champs_categorises') }}
-     WHERE categorie = 'demographie'
-""") %}
+{% if execute %}
+    {% set res = run_query("
+        SELECT champ_insee, clef_json, base_source
+        FROM {{ source('sources', 'champs_categorises') }}
+        WHERE categorie = 'demographie'
+    ") %}
+    {% set champs_raw = res.rows | list %}
+{% else %}
+    {% set champs_raw = [] %}
+{% endif %}
 
 {% set pop_champs = [] %}
 {% set fam_champs = [] %}
