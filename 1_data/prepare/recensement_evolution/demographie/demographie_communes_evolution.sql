@@ -3,16 +3,41 @@
 {% set annees = range(2016, 2022) %}  {# 2016 → 2021 inclus #}
 
 {% if execute %}
-    {% set sql %}
-        SELECT champ_insee, clef_json, base_source
-        FROM {{ source('sources', 'champs_categorises') }}
-        WHERE categorie = 'demographie'
-    {% endset %}
+    {% set cols_by_alias = {} %}
 
-    {% set champs_raw_table = run_query(sql) %}
-    {% set champs_raw = champs_raw_table.rows | list %}
+    {% for annee in annees %}
+        {% set alias  = 'sp' ~ annee %}
+        {% set src    = source('sources', 'base_cc_evol_struct_pop_' ~ annee) %}
+        {% set schema = src.schema %}
+        {% set table  = src.identifier %}
+
+        {% set sql_cols %}
+            SELECT column_name
+            FROM information_schema.columns
+            WHERE table_schema = '{{ schema }}'
+              AND table_name   = '{{ table }}'
+        {% endset %}
+        {% set table_cols = run_query(sql_cols).rows | map(attribute=0) | list %}
+        {{ log('→ columns trouvées pour ' ~ alias ~ ' : ' ~ (table_cols | length), info=True) }}
+        {% do cols_by_alias.update({ alias: table_cols }) %}
+
+        {% set alias  = 'fm' ~ annee %}
+        {% set src    = source('sources', 'base_cc_coupl_fam_men_' ~ annee) %}
+        {% set schema = src.schema %}
+        {% set table  = src.identifier %}
+
+        {% set sql_cols %}
+            SELECT column_name
+            FROM information_schema.columns
+            WHERE table_schema = '{{ schema }}'
+              AND table_name   = '{{ table }}'
+        {% endset %}
+        {% set table_cols = run_query(sql_cols).rows | map(attribute=0) | list %}
+        {{ log('→ columns trouvées pour ' ~ alias ~ ' : ' ~ (table_cols | length), info=True) }}
+        {% do cols_by_alias.update({ alias: table_cols }) %}
+    {% endfor %}
 {% else %}
-    {% set champs_raw = [] %}
+    {% set cols_by_alias = {} %}
 {% endif %}
 
 {% set pop_champs = [] %}
@@ -37,37 +62,7 @@
     {% endif %}
 {% endfor %}
 
-{% if execute %}
-    {% set cols_by_alias = {} %}
-
-    {% for annee in annees %}
-        {% set alias = 'sp' ~ annee %}
-        {% set src   = source('sources', 'base_cc_evol_struct_pop_' ~ annee) %}
-        {% set sql_cols %}
-            SELECT column_name
-            FROM   information_schema.columns
-            WHERE  table_schema = split_part('{{ src }}','.',1)
-              AND  table_name   = split_part('{{ src }}','.',2)
-        {% endset %}
-        {% set table_cols = run_query(sql_cols).columns[0].values() | list %}
-        {% do cols_by_alias.update({ alias: table_cols }) %}
-    {% endfor %}
-
-    {% for annee in annees %}
-        {% set alias = 'fm' ~ annee %}
-        {% set src   = source('sources', 'base_cc_coupl_fam_men_' ~ annee) %}
-        {% set sql_cols %}
-            SELECT column_name
-            FROM   information_schema.columns
-            WHERE  table_schema = split_part('{{ src }}','.',1)
-              AND  table_name   = split_part('{{ src }}','.',2)
-        {% endset %}
-        {% set table_cols = run_query(sql_cols).columns[0].values() | list %}
-        {% do cols_by_alias.update({ alias: table_cols }) %}
-    {% endfor %}
-{% else %}
-    {% set cols_by_alias = {} %}
-{% endif %}
+{{ log('→ pop_champs : ' ~ (pop_champs | length) ~ '  |  fam_champs : ' ~ (fam_champs | length), info=True) }}
 
 with
 {% for annee in annees %}

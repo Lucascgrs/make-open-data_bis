@@ -20,19 +20,25 @@
         {% endif %}
     {% endset %}
     {% set src = source('sources', tbl.strip()) %}
+    {% set schema = src.schema %}
+    {% set table  = src.identifier %}
 
     {% if execute %}
         {% set q_exists %}
             SELECT 1
-            FROM   information_schema.columns
-            WHERE  table_schema = split_part('{{ src }}', '.', 1)
-              AND  table_name   = split_part('{{ src }}', '.', 2)
-              AND  column_name  = '{{ col_name }}'
+            FROM information_schema.columns
+            WHERE table_schema = '{{ schema }}'
+              AND table_name   = '{{ table }}'
+              AND column_name  = '{{ col_name }}'
             LIMIT 1
         {% endset %}
         {% set exists = run_query(q_exists).rows | length > 0 %}
     {% else %}
-        {% set exists = true %}  {# compile hors connexion #}
+        {% set exists = true %}
+    {% endif %}
+
+    {% if not exists %}
+        {{ log('⚠️  Colonne absente (' ~ alias ~ '.' ~ col_name ~ ') : remplissage NULL', info=True) }}
     {% endif %}
 
     {% if exists %}
@@ -50,6 +56,6 @@
             safe_demographie_col_expr(c.champ_insee, c.clef_json, annee, alias)
         ) %}
     {% endfor %}
-    {{ cols | join(',
-        ') }}
+    {{ cols | join(',\n        ') }}
+
 {% endmacro %}
