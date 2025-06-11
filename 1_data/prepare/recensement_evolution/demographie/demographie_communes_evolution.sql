@@ -1,6 +1,6 @@
 {{ config(materialized='table') }}
 
-{% set annees = range(2016, 2022) %}        {# 2016‒2021 inclus #}
+{% set annees = range(2016, 2022) %}  {# 2016 → 2021 inclus #}
 
 {% if execute %}
     {% set sql %}
@@ -15,21 +15,61 @@
     {% set champs_raw = [] %}
 {% endif %}
 
-
-
 {% set pop_champs = [] %}
 {% set fam_champs = [] %}
+{% set seen_pop = [] %}
+{% set seen_fam = [] %}
 {% for row in champs_raw %}
-    {% set rec = {'champ_insee': row[0], 'clef_json': row[1]} %}
+    {% set clef   = row[1] %}
+    {% set record = {'champ_insee': row[0], 'clef_json': clef} %}
+
     {% if row[2] == 'rp_population' %}
-        {% do pop_champs.append(rec) %}
+        {% if clef not in seen_pop %}
+            {% do pop_champs.append(record) %}
+            {% do seen_pop.append(clef) %}
+        {% endif %}
+
     {% elif row[2] == 'rp_familles_menages' %}
-        {% do fam_champs.append(rec) %}
+        {% if clef not in seen_fam %}
+            {% do fam_champs.append(record) %}
+            {% do seen_fam.append(clef) %}
+        {% endif %}
     {% endif %}
 {% endfor %}
 
-with
+{% if execute %}
+    {% set cols_by_alias = {} %}
 
+    {% for annee in annees %}
+        {% set alias = 'sp' ~ annee %}
+        {% set src   = source('sources', 'base_cc_evol_struct_pop_' ~ annee) %}
+        {% set sql_cols %}
+            SELECT column_name
+            FROM   information_schema.columns
+            WHERE  table_schema = split_part('{{ src }}','.',1)
+              AND  table_name   = split_part('{{ src }}','.',2)
+        {% endset %}
+        {% set table_cols = run_query(sql_cols).columns[0].values() | list %}
+        {% do cols_by_alias.update({ alias: table_cols }) %}
+    {% endfor %}
+
+    {% for annee in annees %}
+        {% set alias = 'fm' ~ annee %}
+        {% set src   = source('sources', 'base_cc_coupl_fam_men_' ~ annee) %}
+        {% set sql_cols %}
+            SELECT column_name
+            FROM   information_schema.columns
+            WHERE  table_schema = split_part('{{ src }}','.',1)
+              AND  table_name   = split_part('{{ src }}','.',2)
+        {% endset %}
+        {% set table_cols = run_query(sql_cols).columns[0].values() | list %}
+        {% do cols_by_alias.update({ alias: table_cols }) %}
+    {% endfor %}
+{% else %}
+    {% set cols_by_alias = {} %}
+{% endif %}
+
+with
 {% for annee in annees %}
 struct_pop_{{ annee }} as (
     select
@@ -51,23 +91,16 @@ fam_men_{{ annee }} as (
 {% endfor %}
 
 , rp_population as (
-
-    {# Démarre sur l’année la plus ancienne… #}
-    select *
-    from struct_pop_2016
-
-    {# …et on ajoute chaque millésime suivant. #}
+    select * from struct_pop_2016
     {% for annee in annees if annee != 2016 %}
-    full outer join struct_pop_{{ annee }} using (code_commune)
+        full outer join struct_pop_{{ annee }} using (code_commune)
     {% endfor %}
 )
 
 , rp_familles_menages as (
-
-    select *
-    from fam_men_2016
+    select * from fam_men_2016
     {% for annee in annees if annee != 2016 %}
-    full outer join fam_men_{{ annee }} using (code_commune)
+        full outer join fam_men_{{ annee }} using (code_commune)
     {% endfor %}
 )
 
