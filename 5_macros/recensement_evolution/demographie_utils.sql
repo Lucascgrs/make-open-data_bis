@@ -12,21 +12,18 @@
 
     {% set col_name = letter ~ yy ~ '_' ~ body %}
 
-    {% set tbl %}
-        {% if alias.startswith('sp') %}
-            base_cc_evol_struct_pop_{{ annee }}
-        {% else %}
-            base_cc_coupl_fam_men_{{ annee }}
-        {% endif %}
-    {% endset %}
-    {% set src = source('sources', tbl.strip()) %}
-    {% set schema = src.schema %}
-    {% set table  = src.identifier %}
+    {% set must_check = alias.startswith('sp') or alias.startswith('fm') %}
 
-    {% if execute %}
+    {% if execute and must_check %}
+        {% set tbl = alias.startswith('sp') 
+                     and 'base_cc_evol_struct_pop_' ~ annee
+                     or  'base_cc_coupl_fam_men_'  ~ annee %}
+        {% set src = source('sources', tbl) %}
+        {% set schema = src.schema %}
+        {% set table  = src.identifier %}
+
         {% set q_exists %}
-            SELECT 1
-            FROM information_schema.columns
+            SELECT 1 FROM information_schema.columns
             WHERE table_schema = '{{ schema }}'
               AND table_name   = '{{ table }}'
               AND column_name  = '{{ col_name }}'

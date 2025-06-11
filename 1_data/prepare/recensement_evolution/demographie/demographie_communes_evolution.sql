@@ -1,6 +1,36 @@
 {{ config(materialized='table') }}
 
-{% set annees = range(2016, 2022) %}  {# 2016 → 2021 inclus #}
+{% set annees = range(2016, 2022) %}  {# 2016 → 2021 #}
+
+{% if execute %}
+    {% set sql %}
+        SELECT champ_insee, clef_json, base_source
+        FROM {{ source('sources', 'champs_categorises') }}
+        WHERE categorie = 'demographie'
+    {% endset %}
+    {% set champs_raw_table = run_query(sql) %}
+    {% set champs_raw = champs_raw_table.rows | list %}
+{% else %}
+    {% set champs_raw = [] %}
+{% endif %}
+
+{% set pop_champs = [] %}
+{% set fam_champs = [] %}
+{% set seen_pop = [] %}
+{% set seen_fam = [] %}
+{% for row in champs_raw %}
+    {% set clef   = row[1] %}
+    {% set record = {'champ_insee': row[0], 'clef_json': clef} %}
+
+    {% if row[2] == 'rp_population' and clef not in seen_pop %}
+        {% do pop_champs.append(record) %}
+        {% do seen_pop.append(clef) %}
+    {% elif row[2] == 'rp_familles_menages' and clef not in seen_fam %}
+        {% do fam_champs.append(record) %}
+        {% do seen_fam.append(clef) %}
+    {% endif %}
+{% endfor %}
+{{ log('→ pop_champs : ' ~ (pop_champs | length) ~ '  |  fam_champs : ' ~ (fam_champs | length), info=True) }}
 
 {% if execute %}
     {% set cols_by_alias = {} %}
@@ -10,7 +40,6 @@
         {% set src    = source('sources', 'base_cc_evol_struct_pop_' ~ annee) %}
         {% set schema = src.schema %}
         {% set table  = src.identifier %}
-
         {% set sql_cols %}
             SELECT column_name
             FROM information_schema.columns
@@ -25,7 +54,6 @@
         {% set src    = source('sources', 'base_cc_coupl_fam_men_' ~ annee) %}
         {% set schema = src.schema %}
         {% set table  = src.identifier %}
-
         {% set sql_cols %}
             SELECT column_name
             FROM information_schema.columns
@@ -40,48 +68,22 @@
     {% set cols_by_alias = {} %}
 {% endif %}
 
-{% set pop_champs = [] %}
-{% set fam_champs = [] %}
-{% set seen_pop = [] %}
-{% set seen_fam = [] %}
-{% for row in champs_raw %}
-    {% set clef   = row[1] %}
-    {% set record = {'champ_insee': row[0], 'clef_json': clef} %}
-
-    {% if row[2] == 'rp_population' %}
-        {% if clef not in seen_pop %}
-            {% do pop_champs.append(record) %}
-            {% do seen_pop.append(clef) %}
-        {% endif %}
-
-    {% elif row[2] == 'rp_familles_menages' %}
-        {% if clef not in seen_fam %}
-            {% do fam_champs.append(record) %}
-            {% do seen_fam.append(clef) %}
-        {% endif %}
-    {% endif %}
-{% endfor %}
-
-{{ log('→ pop_champs : ' ~ (pop_champs | length) ~ '  |  fam_champs : ' ~ (fam_champs | length), info=True) }}
-
 with
 {% for annee in annees %}
 struct_pop_{{ annee }} as (
     select
-        lpad(cast("CODGEO" as text), 5, '0')              AS code_commune,
-        {{ generate_demographie_columns_year(
-               pop_champs, annee, 'sp' ~ annee) }}
-    from {{ source('sources', 'base_cc_evol_struct_pop_' ~ annee) }}  sp{{ annee }}
+        lpad(cast("CODGEO" as text), 5, '0') as code_commune,
+        {{ generate_demographie_columns_year(pop_champs, annee, 'sp' ~ annee) }}
+    from {{ source('sources', 'base_cc_evol_struct_pop_' ~ annee) }} as sp{{ annee }}
 ),
 {% endfor %}
 
 {% for annee in annees %}
 fam_men_{{ annee }} as (
     select
-        lpad(cast("CODGEO" as text), 5, '0')              AS code_commune,
-        {{ generate_demographie_columns_year(
-               fam_champs, annee, 'fm' ~ annee) }}
-    from {{ source('sources', 'base_cc_coupl_fam_men_' ~ annee) }}     fm{{ annee }}
+        lpad(cast("CODGEO" as text), 5, '0') as code_commune,
+        {{ generate_demographie_columns_year(fam_champs, annee, 'fm' ~ annee) }}
+    from {{ source('sources', 'base_cc_coupl_fam_men_' ~ annee) }} as fm{{ annee }}
 ){% if not loop.last %},{% endif %}
 {% endfor %}
 
@@ -100,14 +102,14 @@ fam_men_{{ annee }} as (
 )
 
 select
-    coalesce(rp_population.code_commune,
-             rp_familles_menages.code_commune) AS code_commune,
+    coalesce(rp_population.code_commune, rp_familles_menages.code_commune) as code_commune,
 
-    -- Colonnes Population 2016-2021
+    -- Colonnes Population 2016‑2021
     {% for annee in annees %}
-        {{ generate_demographie_columns_year(pop_champs, annee, 'rp_population') }},{% endfor %}
+        {{ generate_demographie_columns_year(pop_champs, annee, 'rp_population') }}{% if not loop.last %},{% endif %}
+    {% endfor %},
 
-    -- Colonnes Familles/Ménages 2016-2021
+    -- Colonnes Familles/Ménages 2016‑2021
     {% for annee in annees %}
         {{ generate_demographie_columns_year(fam_champs, annee, 'rp_familles_menages') }}{% if not loop.last %},{% endif %}
     {% endfor %}
