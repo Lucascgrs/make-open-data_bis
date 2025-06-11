@@ -1,6 +1,6 @@
 {{ config(materialized='table') }}
 
-{% set annees = range(2016, 2022) %}  {# 2016 → 2021 #}
+{% set annees = range(2016, 2022) %}
 
 {% if execute %}
     {% set sql %}
