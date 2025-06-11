@@ -1,18 +1,20 @@
 {% macro demographie_col_expr(champ_insee, clef_json, annee, alias) %}
-    {#
-        Construit, par ex. :
-        {{ demographie_col_expr('POP_P', 'pop_p', 2018, 'sp2018') }}
-        → sp2018.P18_POP AS pop_p_2018
-    #}
+
     {% set parts  = champ_insee.split('_') %}
-    {% set suffix = parts[0] %}
-    {% set prefix = parts[1] | upper %}
-    {{ alias }}.{{ prefix }}{{ (annee|string)[-2:] }}_{{ suffix }}
-        AS {{ clef_json }}_{{ annee }}
+    {% set yy     = (annee|string)[-2:] %}
+
+    {% if parts|length == 2 and parts[1]|length == 1 %}
+        {# Exemple : POP_P  →  P16_POP #}
+        {% set col = 'P' ~ yy ~ '_' ~ parts[0] %}
+    {% else %}
+        {# Exemple : POP01P_IRAN1  →  P16__POP01P_IRAN1 #}
+        {% set col = 'P' ~ yy ~ '__' ~ champ_insee %}
+    {% endif %}
+
+    {{ alias }}.{{ col }} AS {{ clef_json }}_{{ annee }}
 {% endmacro %}
 
 {% macro generate_demographie_columns_year(champs, annee, alias) %}
-    {# Champs d’un **seul** millésime, avec l’alias de table donné #}
     {% set cols = [] %}
     {% for c in champs %}
         {% do cols.append(
