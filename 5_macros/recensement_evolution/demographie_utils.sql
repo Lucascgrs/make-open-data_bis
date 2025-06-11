@@ -1,18 +1,26 @@
 {% macro demographie_col_expr(champ_insee, clef_json, annee, alias) %}
 
-    {% set parts  = champ_insee.split('_') %}
-    {% set yy     = (annee|string)[-2:] %}
+    {% set yy = (annee|string)[-2:] %}
 
-    {% if parts|length == 2 and parts[1]|length == 1 %}
-        {# Exemple : POP_P  →  P16_POP #}
-        {% set col = 'P' ~ yy ~ '_' ~ parts[0] %}
+    {% if champ_insee.endswith('_P') or
+          champ_insee.endswith('_C') or
+          champ_insee.endswith('_F') or
+          (champ_insee.endswith('_' ~ champ_insee[-1]) and
+           champ_insee[-1]|length == 1 and
+           champ_insee[-2] == '_' ) %}
+
+        {% set letter = champ_insee[-1]|upper %}
+        {% set body   = champ_insee[:-2] %}   {# on coupe "_X" #}
     {% else %}
-        {# Exemple : POP01P_IRAN1  →  P16__POP01P_IRAN1 #}
-        {% set col = 'P' ~ yy ~ '__' ~ champ_insee %}
+        {% set letter = 'P' %}
+        {% set body   = champ_insee %}
     {% endif %}
 
-    {{ alias }}.{{ col }} AS {{ clef_json }}_{{ annee }}
+    {% set col = letter ~ yy ~ '_' ~ body %}
+
+    {{ alias }}."{{ col }}" AS {{ clef_json }}_{{ annee }}
 {% endmacro %}
+
 
 {% macro generate_demographie_columns_year(champs, annee, alias) %}
     {% set cols = [] %}

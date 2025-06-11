@@ -3,15 +3,18 @@
 {% set annees = range(2016, 2022) %}        {# 2016‒2021 inclus #}
 
 {% if execute %}
-    {% set champs_raw_table = run_query(
-        'SELECT champ_insee, clef_json, base_source ' ~
-        'FROM ' ~ source('sources', 'champs_categorises') ~ ' ' ~
-        'WHERE categorie = ''demographie'''
-    ) %}
+    {% set sql %}
+        SELECT champ_insee, clef_json, base_source
+        FROM {{ source('sources', 'champs_categorises') }}
+        WHERE categorie = 'demographie'
+    {% endset %}
+
+    {% set champs_raw_table = run_query(sql) %}
     {% set champs_raw = champs_raw_table.rows | list %}
 {% else %}
     {% set champs_raw = [] %}
 {% endif %}
+
 
 
 {% set pop_champs = [] %}
@@ -30,7 +33,7 @@ with
 {% for annee in annees %}
 struct_pop_{{ annee }} as (
     select
-        lpad(cast(codgeo as text), 5, '0')              AS code_commune,
+        lpad(cast("CODGEO" as text), 5, '0')              AS code_commune,
         {{ generate_demographie_columns_year(
                pop_champs, annee, 'sp' ~ annee) }}
     from {{ source('sources', 'base_cc_evol_struct_pop_' ~ annee) }}  sp{{ annee }}
@@ -40,7 +43,7 @@ struct_pop_{{ annee }} as (
 {% for annee in annees %}
 fam_men_{{ annee }} as (
     select
-        lpad(cast(codgeo as text), 5, '0')              AS code_commune,
+        lpad(cast("CODGEO" as text), 5, '0')              AS code_commune,
         {{ generate_demographie_columns_year(
                fam_champs, annee, 'fm' ~ annee) }}
     from {{ source('sources', 'base_cc_coupl_fam_men_' ~ annee) }}     fm{{ annee }}
@@ -82,4 +85,4 @@ select
     {% endfor %}
 
 from rp_population
-full outer join rp_familles_menages using (code_commune);
+full outer join rp_familles_menages using (code_commune)
