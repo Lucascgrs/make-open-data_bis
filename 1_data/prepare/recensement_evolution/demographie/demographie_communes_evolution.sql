@@ -1,6 +1,6 @@
 {{ config(materialized='table') }}
 
-{% set annees = range(2016, 2022) %}
+{% set annees = range(2016, 2017) %}
 
 {% if execute %}
     {% set sql %}
@@ -109,7 +109,6 @@ fam_men_{{ annee }} as (
         nom_departement,
         code_region,
         nom_region,
-        population_totale
     from {{ ref('infos_communes') }}
 )
 
@@ -121,7 +120,6 @@ select
     ic.nom_departement,
     ic.code_region,
     ic.nom_region,
-    ic.population_totale,
 
     -- Colonnes Population 2016‑2021
     {% for annee in annees %}
