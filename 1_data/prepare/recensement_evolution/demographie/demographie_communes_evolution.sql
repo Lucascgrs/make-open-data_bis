@@ -101,25 +101,21 @@ fam_men_{{ annee }} as (
     {% endfor %}
 )
 
-, infos_communes as (
+, cog_communes as (
     select
-        code_commune,
-        nom_commune,
-        code_departement,
-        nom_departement,
-        code_region,
-        nom_region,
-    from {{ ref('infos_communes') }}
+        code as code_commune,
+        nom as nom_commune,
+        departement as code_departement,
+        region as code_region
+    from {{ source('sources', 'cog_communes') }}
 )
 
 select
     coalesce(rp_population.code_commune, rp_familles_menages.code_commune) as code_commune,
     -- Ajout des informations des communes
-    ic.nom_commune,
-    ic.code_departement,
-    ic.nom_departement,
-    ic.code_region,
-    ic.nom_region,
+    cc.nom_commune,
+    cc.code_departement,
+    cc.code_region,
 
     -- Colonnes Population 2016‑2021
     {% for annee in annees %}
@@ -133,4 +129,4 @@ select
 
 from rp_population
 full outer join rp_familles_menages using (code_commune)
-left join infos_communes ic using (code_commune)
+left join cog_communes cc using (code_commune)
