@@ -6,7 +6,7 @@
 {# Récupération des bases sources uniques #}
 {% set bases_query %}
     select distinct base_source
-    from {{ ref('champs_disponibles_categorises') }}
+    from {{ source('sources', 'champs_disponibles_sources') }}
     where categorie = 'population_generale'
 {% endset %}
 
