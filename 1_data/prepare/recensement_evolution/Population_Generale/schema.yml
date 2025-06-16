@@ -1,0 +1,5 @@
+sources:
+  - name: sources          # nom logique du groupe
+    schema: raw            # schéma physique
+    tables:
+      - name: champs_disponibles_sources
