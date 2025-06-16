@@ -5,14 +5,12 @@
 
 {# Définition des années #}
 {% set annees = [2016, 2017, 2018, 2019, 2020, 2021] %}
-{% do log("Années à traiter : " ~ annees, info=True) %}
 
-{# Récupération des bases sources uniques #}
-{% do print("🔍 Récupération des bases sources...") %}
+{% do print("🔍 Récupération des bases sources") %}
 {% set bases_query %}
-    select distinct base_source
+    select distinct base_table_source
     from {{ source('sources', 'champs_disponibles_sources') }}
-    where categorie = 'population_generale'
+    where categorie = 'Population_Generale'
 {% endset %}
 
 {% set bases = run_query(bases_query) %}
@@ -22,8 +20,6 @@
 {% endfor %}
 {% do log("Bases sources trouvées : " ~ bases_sources | join(", "), info=True) %}
 
-{# On construit la liste plate de tous les noms de CTEs #}
-{% do print("📝 Construction de la liste des CTEs...") %}
 {% set cte_names = [] %}
 {% for base in bases_sources %}
     {% for annee in annees %}
@@ -35,7 +31,6 @@
 
 {% do print("🔨 Début de la génération SQL...") %}
 with
-{# Génération des CTEs proprement #}
 {% for cte in cte_names %}
     {% do log("Génération CTE : " ~ cte, info=True) %}
     {{ cte }} as (
