@@ -1,54 +1,45 @@
-{% macro transform_column_names(relation, annee, categorie='Population_Generale') %}
-    {% set suffix = (annee|string)[2:] %}
+{% macro transform_column_names(relation, year, category='Population_Generale') %}
+    {% set year_suffix = (year|string)[2:] %}
 
-    {% do log("=== [transform_column_names] Start for relation: " ~ relation ~ ", annee: " ~ annee ~ ", categorie: " ~ categorie, info=True) %}
-
-    {% set mapping_query %}
+    {# Récupération du mapping des noms de colonnes #}
+    {% set column_mapping_query %}
         select distinct 
             champ_insee_transfo,
             clef_json_transfo
         from {{ source('sources', 'champs_disponibles_sources') }}
-        where categorie = '{{ categorie }}'
+        where categorie = '{{ category }}'
     {% endset %}
 
-    {% set mapping = run_query(mapping_query) %}
-    {% set mapping_dict = {} %}
-    {% for m in mapping %}
-        {% do mapping_dict.update({m[0]: m[1]}) %}
+    {# Création du dictionnaire de mapping #}
+    {% set mapping_results = run_query(column_mapping_query) %}
+    {% set column_name_mapping = {} %}
+    {% for result in mapping_results %}
+        {% do column_name_mapping.update({result[0]: result[1]}) %}
     {% endfor %}
-    {% do log("Mapping dict: " ~ mapping_dict, info=True) %}
 
+    {# Transformation des noms de colonnes #}
     {% set columns = adapter.get_columns_in_relation(relation) %}
-    {% set selected_columns = [] %}
-    {% set mapped_names = [] %}
-    {% for col in columns %}
-        {% set colname = col.name %}
-        {% do log("Traitement colonne: " ~ colname, info=True) %}
+    {% set transformed_columns = [] %}
+
+    {% for column in columns %}
+        {% set original_column_name = column.name %}
         
-        {% if colname == 'CODGEO' %}
-            {% do selected_columns.append('\"' ~ colname ~ '\" as \"' ~ colname ~ '\"') %}
-            {% do mapped_names.append(colname) %}
-            {% do log("Ajout colonne CODGEO", info=True) %}
+        {# Traitement spécial pour CODGEO #}
+        {% if original_column_name == 'CODGEO' %}
+            {% do transformed_columns.append('\"' ~ original_column_name ~ '\" as \"' ~ original_column_name ~ '\"') %}
         
-        {% elif colname.startswith('P' ~ suffix ~ '_') or colname.startswith('C' ~ suffix ~ '_') %}
-            {% set base_name = colname[0] ~ '_' ~ colname.split('_')[1:] | join('_') %}
-            {% do log("Colonne potentielle à mapper: " ~ colname ~ " | base_name: " ~ base_name, info=True) %}
-            {% if base_name in mapping_dict %}
-                {% do selected_columns.append('\"' ~ colname ~ '\" as \"' ~ mapping_dict[base_name] ~ '\"') %}
-                {% do mapped_names.append(mapping_dict[base_name]) %}
-                {% do log("Mapping trouvé: " ~ base_name ~ " → " ~ mapping_dict[base_name], info=True) %}
-            {% else %}
-                {% do log("Aucun mapping trouvé pour: " ~ base_name, info=True) %}
+        {# Traitement des colonnes de population et autres métriques #}
+        {% elif original_column_name.startswith('P' ~ year_suffix ~ '_') or original_column_name.startswith('C' ~ year_suffix ~ '_') %}
+            {% set base_column_name = original_column_name[0] ~ '_' ~ original_column_name.split('_')[1:] | join('_') %}
+            {% if base_column_name in column_name_mapping %}
+                {% do transformed_columns.append('\"' ~ original_column_name ~ '\" as \"' ~ column_name_mapping[base_column_name] ~ '\"') %}
             {% endif %}
         {% endif %}
     {% endfor %}
 
-    {% do log("Colonnes sélectionnées (SQL): " ~ selected_columns, info=True) %}
-    {% do log("Noms finaux de colonnes (pour CTE): " ~ mapped_names, info=True) %}
-
+    {# Génération de la requête finale #}
     select
-        {{ selected_columns | join(',\n        ') }},
-        {{ annee }} as annee
+        {{ transformed_columns | join(',\n        ') }},
+        {{ year }} as annee
     from {{ relation }}
-    {% do log("=== [transform_column_names] Fin macro pour: " ~ relation, info=True) %}
 {% endmacro %}
