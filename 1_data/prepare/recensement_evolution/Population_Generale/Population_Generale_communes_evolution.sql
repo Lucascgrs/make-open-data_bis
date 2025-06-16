@@ -1,4 +1,7 @@
-{{ config(materialized='table') }}
+{{ config(
+    materialized='table',
+    schema='prepare'
+) }}
 
 {# Définition des années #}
 {% set annees = [2016, 2017, 2018, 2019, 2020, 2021] %}
@@ -6,7 +9,7 @@
 {# Récupération des bases sources uniques #}
 {% set bases_query %}
     select distinct base_source
-    from {{ source('sources', 'champs_disponibles_sources') }}
+    from {{ ref('champs_disponibles_categorises') }}
     where categorie = 'population_generale'
 {% endset %}
 
@@ -19,6 +22,7 @@
 -- Début de la requête SQL
 with 
 
+{# Création des CTEs pour chaque base et année #}
 {% for base in bases_sources %}
     {% for annee in annees %}
         {{ base }}_{{ annee }} as (
@@ -55,7 +59,6 @@ from {% for base in bases_sources %}
     full outer join
     {% endif %}
 {% endfor %}
-
 {% if bases_sources|length > 1 %}
     on {% for base in bases_sources %}
         {% if not loop.first %}

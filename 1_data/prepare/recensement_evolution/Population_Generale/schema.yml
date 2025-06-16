@@ -1,5 +1,8 @@
+version: 2
+
 sources:
-  - name: sources          # nom logique du groupe
-    schema: raw            # schéma physique
+  - name: sources
+    schema: sources  # ou le schéma approprié où se trouvent vos tables sources
     tables:
-      - name: champs_disponibles_sources
+      - name: champs_disponibles_categorises
+      # Ajoutez ici vos autres tables sources
