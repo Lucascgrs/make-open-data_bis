@@ -19,32 +19,34 @@
     {% do bases_sources.append(base[0]) %}
 {% endfor %}
 
--- Début de la requête SQL
-with 
-
-{# Création des CTEs pour chaque base et année #}
+{# On construit la liste plate de tous les noms de CTEs #}
+{% set cte_names = [] %}
 {% for base in bases_sources %}
     {% for annee in annees %}
-        {{ base }}_{{ annee }} as (
-            {{ transform_column_names(
-                source('sources', base ~ '_' ~ annee),
-                annee,
-                'population_generale'
-            ) }}
-        ){% if not loop.last %},{% endif %}
+        {% do cte_names.append(base ~ '_' ~ annee) %}
     {% endfor %}
-    {% if not loop.last %},{% endif %}
-{% endfor %},
+{% endfor %}
 
--- Union des tables par base source
-{% for base in bases_sources %}
-    {{ base }}_unified as (
-        select * from {{ base }}_{{ annees[0] }}
-        {% for annee in annees[1:] %}
-            union all
-            select * from {{ base }}_{{ annee }}
-        {% endfor %}
+with
+{# Génération des CTEs proprement #}
+{% for cte in cte_names %}
+    {{ cte }} as (
+        {{ transform_column_names(
+            source('sources', cte),
+            cte.split('_')[-1],
+            'population_generale'
+        ) }}
     ){% if not loop.last %},{% endif %}
+{% endfor %}
+
+{% for base in bases_sources %}
+,{{ base }}_unified as (
+    select * from {{ base }}_{{ annees[0] }}
+    {% for annee in annees[1:] %}
+        union all
+        select * from {{ base }}_{{ annee }}
+    {% endfor %}
+)
 {% endfor %}
 
 -- Requête finale
@@ -53,17 +55,19 @@ select
     {% for base in bases_sources %}
         {{ base }}_unified.*{% if not loop.last %},{% endif %}
     {% endfor %}
-from {% for base in bases_sources %}
+from
+{% for base in bases_sources %}
     {{ base }}_unified
     {% if not loop.last %}
     full outer join
     {% endif %}
 {% endfor %}
 {% if bases_sources|length > 1 %}
-    on {% for base in bases_sources %}
+    on
+    {% for base in bases_sources %}
         {% if not loop.first %}
             {{ bases_sources[0] }}_unified.CODGEO = {{ base }}_unified.CODGEO
-            {% if not loop.last %}and{% endif %}
+            {% if not loop.last %} and {% endif %}
         {% endif %}
     {% endfor %}
 {% endif %}
