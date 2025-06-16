@@ -1,46 +1,66 @@
 {{ config(materialized='table') }}
 
+{# Définition des années #}
 {% set annees = [2016, 2017, 2018, 2019, 2020, 2021] %}
 
--- Bloc WITH
-with
+{# Récupération des bases sources uniques #}
+{% set bases_query %}
+    select distinct base_source
+    from {{ ref('champs_disponibles_categorises') }}
+    where categorie = 'population_generale'
+{% endset %}
 
--- Référentiel des communes
-cog_communes as (
-  select
-    code as code_commune,
-    nom as nom_commune,
-    departement as code_departement,
-    region as code_region
-  from {{ source('sources', 'cog_communes') }}
-),
+{% set bases = run_query(bases_query) %}
+{% set bases_sources = [] %}
+{% for base in bases %}
+    {% do bases_sources.append(base[0]) %}
+{% endfor %}
 
--- Tables annuelles transformées
-{% for annee in annees %}
-base_{{ annee }} as (
-    {{ rename_columns_by_year(
-        source('sources', 'base_cc_evol_struct_pop_' ~ annee),
-        annee,
-        ['CODGEO']
-    ) }}
-){% if not loop.last %},{% endif %}
+-- Début de la requête SQL
+with 
+
+{% for base in bases_sources %}
+    {% for annee in annees %}
+        {{ base }}_{{ annee }} as (
+            {{ transform_column_names(
+                source('sources', base ~ '_' ~ annee),
+                annee,
+                'population_generale'
+            ) }}
+        ){% if not loop.last %},{% endif %}
+    {% endfor %}
+    {% if not loop.last %},{% endif %}
 {% endfor %},
 
--- Union de toutes les années
-base_unifiee as (
-    select * from base_2016
-    {% for annee in annees[1:] %}
-    union all
-    select * from base_{{ annee }}
+-- Union des tables par base source
+{% for base in bases_sources %}
+    {{ base }}_unified as (
+        select * from {{ base }}_{{ annees[0] }}
+        {% for annee in annees[1:] %}
+            union all
+            select * from {{ base }}_{{ annee }}
+        {% endfor %}
+    ){% if not loop.last %},{% endif %}
+{% endfor %}
+
+-- Requête finale
+select 
+    coalesce({% for base in bases_sources %}{{ base }}_unified.CODGEO{% if not loop.last %}, {% endif %}{% endfor %}) as CODGEO,
+    {% for base in bases_sources %}
+        {{ base }}_unified.*{% if not loop.last %},{% endif %}
     {% endfor %}
-)
+from {% for base in bases_sources %}
+    {{ base }}_unified
+    {% if not loop.last %}
+    full outer join
+    {% endif %}
+{% endfor %}
 
--- Requête finale avec enrichissement géographique
-select
-    b.*,
-    c.nom_commune,
-    c.code_departement,
-    c.code_region
-from base_unifiee b
-
-left join cog_communes c on b."CODGEO" = c.code_commune
+{% if bases_sources|length > 1 %}
+    on {% for base in bases_sources %}
+        {% if not loop.first %}
+            {{ bases_sources[0] }}_unified.CODGEO = {{ base }}_unified.CODGEO
+            {% if not loop.last %}and{% endif %}
+        {% endif %}
+    {% endfor %}
+{% endif %}
