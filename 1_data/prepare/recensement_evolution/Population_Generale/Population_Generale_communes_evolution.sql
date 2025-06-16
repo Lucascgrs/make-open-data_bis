@@ -37,7 +37,7 @@ with
         {{ transform_column_names(
             source('sources', cte),
             cte.split('_')[-1],
-            'population_generale'
+            'Population_Generale'
         ) }}
     ){% if not loop.last %},{% endif %}
 {% endfor %}
@@ -56,25 +56,55 @@ with
 {% endfor %}
 
 {% do print("🎯 Génération de la requête finale...") %}
+
+{# Générer dynamiquement la liste des colonnes renommées pour le SELECT final #}
+{% set all_columns = [] %}
+{% for base in bases_sources %}
+    {% set suffix = (annees[0]|string)[2:] %}
+    {% set mapping_query %}
+        select distinct champ_insee_transfo, clef_json_transfo
+        from {{ source('sources', 'champs_disponibles_sources') }}
+        where categorie = 'Population_Generale'
+    {% endset %}
+    {% set mapping = run_query(mapping_query) %}
+    {% set mapping_dict = {} %}
+    {% for m in mapping %}
+        {% do mapping_dict.update({m[0]: m[1]}) %}
+    {% endfor %}
+    {% set columns = adapter.get_columns_in_relation(source('sources', base ~ '_' ~ annees[0])) %}
+    {% for col in columns %}
+        {% set colname = col.name %}
+        {% if colname == 'CODGEO' %}
+            {# on ne met pas CODGEO ici, il est déjà dans le coalesce #}
+        {% elif colname.startswith('P' ~ suffix ~ '_') or colname.startswith('C' ~ suffix ~ '_') %}
+            {% set base_name = colname[0] ~ '_' ~ colname.split('_')[1:] | join('_') %}
+            {% if base_name in mapping_dict %}
+                {% do all_columns.append('"' ~ base ~ '_unified"."'+ mapping_dict[base_name] + '"') %}
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+{% endfor %}
+
 -- Requête finale
-select 
-    {% do log("Génération du COALESCE pour CODGEO", info=True) %}
-    coalesce({% for base in bases_sources %}{{ base }}_unified.CODGEO{% if not loop.last %}, {% endif %}{% endfor %}) as CODGEO,
+select
+    coalesce(
+        {% for base in bases_sources %}
+            "{{ base }}_unified"."CODGEO"{% if not loop.last %}, {% endif %}
+        {% endfor %}
+    ) as "CODGEO",
+    {{ all_columns | join(', ') }},
     {% for base in bases_sources %}
-        {% do log("Ajout des colonnes pour : " ~ base, info=True) %}
-        {{ base }}_unified.*{% if not loop.last %},{% endif %}
+        "{{ base }}_unified"."annee"{% if not loop.last %}, {% endif %}
     {% endfor %}
 from
 {% for base in bases_sources %}
     {{ base }}_unified
     {% if not loop.last %}
-    {% do log("Ajout FULL OUTER JOIN pour : " ~ base, info=True) %}
     full outer join
     {% endif %}
 {% endfor %}
 {% if bases_sources|length > 1 %}
     on
-    {% do log("Génération des conditions de jointure", info=True) %}
     {% for base in bases_sources %}
         {% if not loop.first %}
             {{ bases_sources[0] }}_unified.CODGEO = {{ base }}_unified.CODGEO
