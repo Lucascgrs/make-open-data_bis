@@ -4,5 +4,5 @@ sources:
   - name: sources
     schema: sources  # ou le schéma approprié où se trouvent vos tables sources
     tables:
-      - name: champs_disponibles_categorises
+      - name: champs_disponibles_sources
       # Ajoutez ici vos autres tables sources
