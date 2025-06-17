@@ -12,9 +12,8 @@ scot_aggregation as (
         coalesce(nom_scot, 'UNKNOWN') as nom_scot,
         code_departement,
         code_region,
-        "annee",
-        -- Sum all population-related numeric columns based on actual column names
-        sum("p_pop") as "p_pop"
+        "annee",        -- Sum all population-related numeric columns based on actual column names
+        sum("p_pop"::numeric) as "p_pop"
     from commune_data
     where code_departement is not null
     group by 
