@@ -11,3 +11,59 @@ sources:
       - name: base_cc_evol_struct_pop_2020
       - name: base_cc_evol_struct_pop_2021
       - name: champs_disponibles_sources
+
+  - name: prepare
+    schema: prepare
+    tables:
+      - name: infos_communes
+
+models:
+  - name: Population_Generale_communes_evolution
+    description: "Évolution de la population générale au niveau communal"
+    columns:
+      - name: CODGEO
+        description: "Code géographique de la commune"
+      - name: annee
+        description: "Année de recensement"
+      - name: p_pop
+        description: "Population totale"
+
+  - name: Population_Generale_departements_evolution
+    description: "Évolution de la population générale agrégée au niveau départemental"
+    columns:
+      - name: CODGEO
+        description: "Code géographique du département"
+      - name: code_region
+        description: "Code région"
+      - name: annee
+        description: "Année de recensement"
+      - name: p_pop
+        description: "Population totale agrégée"
+
+  - name: Population_Generale_EPCI_evolution
+    description: "Évolution de la population générale agrégée au niveau EPCI"
+    columns:
+      - name: CODGEO
+        description: "SIREN de l'EPCI"
+      - name: code_departement
+        description: "Code département"
+      - name: code_region
+        description: "Code région"
+      - name: annee
+        description: "Année de recensement"
+      - name: p_pop
+        description: "Population totale agrégée"
+
+  - name: Population_Generale_SCoT_evolution
+    description: "Évolution de la population générale agrégée au niveau SCoT"
+    columns:
+      - name: CODGEO
+        description: "Nom du SCoT"
+      - name: code_departement
+        description: "Code département"
+      - name: code_region
+        description: "Code région"
+      - name: annee
+        description: "Année de recensement"
+      - name: p_pop
+        description: "Population totale agrégée"
