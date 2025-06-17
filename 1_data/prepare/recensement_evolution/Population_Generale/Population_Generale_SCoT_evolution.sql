@@ -2,37 +2,24 @@
 
 with commune_data as (
     select * from {{ ref('Population_Generale_communes_evolution') }}
-),
-
--- Get SCoT information and aggregate
-scot_aggregation as (
-    select 
-        nom_scot,
-        code_departement,
-        nom_departement,
-        code_region,
-        nom_region,
-        "annee",
-        -- Sum all population-related numeric columns based on actual column names
-        sum("p_pop") as "p_pop"
-    from commune_data
-    where nom_scot is not null
-    group by 
-        nom_scot,
-        code_departement,
-        nom_departement,
-        code_region,
-        nom_region,
-        "annee"
 )
 
 select 
-    nom_scot as "CODGEO",
-    code_departement,
-    nom_departement,
-    code_region,
-    nom_region,
-    "annee",
-    "p_pop"
-from scot_aggregation
-order by nom_scot, "annee"
+    nom_scot,
+    annee
+    {%- set columns = adapter.get_columns_in_relation(ref('Population_Generale_communes_evolution')) %}
+    {%- for col in columns %}
+    {%- if col.name not in ['CODGEO', 'annee', 'code_departement', 'code_region', 'nom_departement', 'nom_region', 'code_commune', 'nom_commune', 'nom_scot', 'siren_epci'] %}
+    ,sum(case when "{{ col.name }}" ~ '^[0-9]+\.?[0-9]*$' 
+        then nullif("{{ col.name }}", '')::numeric 
+        else null end) as "{{ col.name }}"
+    {%- endif %}
+    {%- endfor %}
+from commune_data
+where nom_scot is not null
+group by 
+    nom_scot,
+    annee
+order by 
+    nom_scot,
+    annee
