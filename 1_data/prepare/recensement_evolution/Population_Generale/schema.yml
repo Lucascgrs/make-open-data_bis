@@ -2,7 +2,7 @@ version: 2
 
 sources:
   - name: sources
-    schema: sources  # ou le schéma approprié où se trouvent vos tables sources
+    schema: sources
     tables:
       - name: base_cc_evol_struct_pop_2016
       - name: base_cc_evol_struct_pop_2017
@@ -11,3 +11,8 @@ sources:
       - name: base_cc_evol_struct_pop_2020
       - name: base_cc_evol_struct_pop_2021
       - name: champs_disponibles_sources
+
+  - name: prepare
+    schema: prepare
+    tables:
+      - name: infos_communes
