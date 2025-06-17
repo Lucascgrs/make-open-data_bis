@@ -96,7 +96,7 @@ sources:
       - name: infos_communes
 
 models:
-  - name: Population_Generale_communes_evolution
-  - name: Population_Generale_departements_evolution
-  - name: Population_Generale_EPCI_evolution
-  - name: Population_Generale_SCoT_evolution
+  - name: Education_Formation_communes_evolution
+  - name: Education_Formation_departements_evolution
+  - name: Education_Formation_EPCI_evolution
+  - name: Education_Formation_SCoT_evolution

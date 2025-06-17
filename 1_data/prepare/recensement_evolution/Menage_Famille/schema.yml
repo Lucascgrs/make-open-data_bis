@@ -96,7 +96,7 @@ sources:
       - name: infos_communes
 
 models:
-  - name: Population_Generale_communes_evolution
-  - name: Population_Generale_departements_evolution
-  - name: Population_Generale_EPCI_evolution
-  - name: Population_Generale_SCoT_evolution
+  - name: Menage_Famille_communes_evolution
+  - name: Menage_Famille_departements_evolution
+  - name: Menage_Famille_EPCI_evolution
+  - name: Menage_Famille_SCoT_evolution
