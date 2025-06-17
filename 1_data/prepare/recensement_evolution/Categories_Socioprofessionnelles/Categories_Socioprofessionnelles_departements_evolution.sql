@@ -1,7 +1,7 @@
 {{ config(materialized='table', schema='prepare') }}
 
 with commune_data as (
-    select * from {{ ref('Categories_Socioprofesionnelles_communes_evolution') }}
+    select * from {{ ref('Categories_Socioprofessionnelles_communes_evolution') }}
 )
 
 select 

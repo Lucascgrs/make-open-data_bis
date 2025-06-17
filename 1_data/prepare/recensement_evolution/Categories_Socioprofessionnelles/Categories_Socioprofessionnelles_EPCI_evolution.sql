@@ -1,13 +1,13 @@
 {{ config(materialized='table', schema='prepare') }}
 
 with commune_data as (
-    select * from {{ ref('Categories_Socioprofesionnelles_communes_evolution') }}
+    select * from {{ ref('Categories_Socioprofessionnelles_communes_evolution') }}
 )
 
 select 
     siren_epci,
     annee
-    {%- set columns = adapter.get_columns_in_relation(ref('Categories_Socioprofesionnelles_communes_evolution')) %}
+    {%- set columns = adapter.get_columns_in_relation(ref('Categories_Socioprofessionnelles_communes_evolution')) %}
     {%- for col in columns %}
     {%- if col.name not in ['CODGEO', 'annee', 'code_departement', 'code_region', 'nom_departement', 'nom_region', 'code_commune', 'nom_commune', 'nom_scot', 'siren_epci'] %}
     ,sum(case when "{{ col.name }}" ~ '^[0-9]+\.?[0-9]*$' 
