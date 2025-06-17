@@ -25,11 +25,7 @@ models:
         description: "Code géographique de la commune"
       - name: annee
         description: "Année de recensement"
-      - name: Population municipale
-        description: "Population municipale"
-      - name: Population comptée à part
-        description: "Population comptée à part"
-      - name: Population totale
+      - name: p_pop
         description: "Population totale"
 
   - name: Population_Generale_departements_evolution
@@ -39,11 +35,7 @@ models:
         description: "Code géographique du département"
       - name: annee
         description: "Année de recensement"
-      - name: Population municipale
-        description: "Population municipale agrégée"
-      - name: Population comptée à part
-        description: "Population comptée à part agrégée"
-      - name: Population totale
+      - name: p_pop
         description: "Population totale agrégée"
 
   - name: Population_Generale_EPCI_evolution
@@ -53,11 +45,7 @@ models:
         description: "SIREN de l'EPCI"
       - name: annee
         description: "Année de recensement"
-      - name: Population municipale
-        description: "Population municipale agrégée"
-      - name: Population comptée à part
-        description: "Population comptée à part agrégée"
-      - name: Population totale
+      - name: p_pop
         description: "Population totale agrégée"
 
   - name: Population_Generale_SCoT_evolution
@@ -67,9 +55,5 @@ models:
         description: "Nom du SCoT"
       - name: annee
         description: "Année de recensement"
-      - name: Population municipale
-        description: "Population municipale agrégée"
-      - name: Population comptée à part
-        description: "Population comptée à part agrégée"
-      - name: Population totale
+      - name: p_pop
         description: "Population totale agrégée"

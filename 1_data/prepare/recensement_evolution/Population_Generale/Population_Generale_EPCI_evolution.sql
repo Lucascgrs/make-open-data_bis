@@ -13,10 +13,8 @@ epci_aggregation as (
         code_region,
         nom_region,
         "annee",
-        -- Sum all population-related numeric columns
-        sum("Population municipale") as "Population municipale",
-        sum("Population comptée à part") as "Population comptée à part", 
-        sum("Population totale") as "Population totale"
+        -- Sum all population-related numeric columns based on actual column names
+        sum("p_pop") as "p_pop"
     from commune_data
     where siren_epci is not null
     group by 
@@ -35,8 +33,6 @@ select
     code_region,
     nom_region,
     "annee",
-    "Population municipale",
-    "Population comptée à part",
-    "Population totale"
+    "p_pop"
 from epci_aggregation
 order by siren_epci, "annee"
