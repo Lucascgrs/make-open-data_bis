@@ -1,26 +1,39 @@
 {{ config(materialized='table', schema='prepare') }}
 
-with infos_communes as (
-    select 
-        code_commune,
-        code_departement,
-        code_region,
-        nom_departement,
-        nom_region,
-        "SCoT" as nom_scot,
-        "SIREN EPCI" as siren_epci
-    from {{ source('prepare', 'infos_communes') }}
+with commune_data as (
+    select * from {{ ref('Population_Generale_communes_evolution') }}
 ),
 
-evolution_data as (
-    {{ generate_evolution_table(
-        category='Population_Generale',
-        start_year=2016,
-        end_year=2021
-    ) }}
+-- Get numeric columns dynamically for aggregation
+numeric_columns as (
+    select 
+        code_departement,
+        nom_departement,
+        code_region,
+        nom_region,
+        "annee",
+        -- Sum all population-related numeric columns
+        sum("Population municipale") as "Population municipale",
+        sum("Population comptée à part") as "Population comptée à part", 
+        sum("Population totale") as "Population totale"
+    from commune_data
+    where code_departement is not null
+    group by 
+        code_departement,
+        nom_departement,
+        code_region,
+        nom_region,
+        "annee"
 )
 
--- Affichons d'abord un exemple des données pour voir la structure
-select *
-from evolution_data
-limit 1
+select 
+    code_departement as "CODGEO",
+    nom_departement,
+    code_region,
+    nom_region,
+    "annee",
+    "Population municipale",
+    "Population comptée à part",
+    "Population totale"
+from numeric_columns
+order by code_departement, "annee"
