@@ -60,9 +60,7 @@
                 ) }}
             ),
         {% endfor %}
-    {% endfor %}
-
-    {# Union des données par table source #}
+    {% endfor %}    {# Union des données par table source #}
     {% for table_name in source_table_names %}
     {{ table_name }}_unified as (
         {% for year in years %}
@@ -72,36 +70,46 @@
                 {% for col in all_possible_columns %}
                     "{{ col }}",
                 {% endfor %}
-                annee
+                annee,
+                '{{ table_name }}' as source_table
             from {{ table_name }}_{{ year }}
         {% endfor %}
     ){% if not loop.last %},{% endif %}
-    {% endfor %}    {# Requête finale avec jointure des tables unifiées #}
-    select
-        {{ source_table_names[0] }}_unified."CODGEO",
-        {% for col in all_possible_columns %}
-            {% if source_table_names|length == 1 %}
-                {{ source_table_names[0] }}_unified."{{ col }}"
-            {% else %}
-                {# Pour plusieurs tables, prendre la première table qui a des données non nulles #}
-                {% for table_name in source_table_names %}
-                    {% if loop.first %}
-                        coalesce({{ table_name }}_unified."{{ col }}"
-                    {% else %}
-                        , {{ table_name }}_unified."{{ col }}"
-                    {% endif %}
-                {% endfor %}) as "{{ col }}"
-            {% endif %}{% if not loop.last %},{% endif %}
-        {% endfor %}
-        {% if all_possible_columns|length > 0 %},{% endif %}
-        {{ source_table_names[0] }}_unified.annee
-
-    from {{ source_table_names[0] }}_unified
-    {% for table_name in source_table_names[1:] %}
-        full outer join {{ table_name }}_unified
-            on {{ source_table_names[0] }}_unified."CODGEO" = {{ table_name }}_unified."CODGEO"
-            and {{ source_table_names[0] }}_unified.annee = {{ table_name }}_unified.annee
     {% endfor %}
+
+    {# Si plusieurs tables sources, les unifier #}
+    {% if source_table_names|length > 1 %}
+    ,all_data_unified as (
+        {% for table_name in source_table_names %}
+            {% if not loop.first %}union all{% endif %}
+            select 
+                "CODGEO",
+                {% for col in all_possible_columns %}
+                    "{{ col }}",
+                {% endfor %}
+                annee
+            from {{ table_name }}_unified
+        {% endfor %}
+    )
+    {% endif %}    {# Requête finale avec jointure des tables unifiées #}
+    select
+        {% if source_table_names|length == 1 %}
+            {{ source_table_names[0] }}_unified."CODGEO",
+            {% for col in all_possible_columns %}
+                {{ source_table_names[0] }}_unified."{{ col }}"{% if not loop.last %},{% endif %}
+            {% endfor %}
+            {% if all_possible_columns|length > 0 %},{% endif %}
+            {{ source_table_names[0] }}_unified.annee
+        from {{ source_table_names[0] }}_unified
+        {% else %}
+            all_data_unified."CODGEO",
+            {% for col in all_possible_columns %}
+                all_data_unified."{{ col }}"{% if not loop.last %},{% endif %}
+            {% endfor %}
+            {% if all_possible_columns|length > 0 %},{% endif %}
+            all_data_unified.annee
+        from all_data_unified
+        {% endif %}
 
     {% endif %}
 
