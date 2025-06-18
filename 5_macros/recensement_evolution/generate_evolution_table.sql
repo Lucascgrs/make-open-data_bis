@@ -1,4 +1,75 @@
 {% macro generate_evolution_table(category, start_year, end_year) %}
+    {# Special handling for problematic categories #}
+    {% if category == 'Emplois' %}
+        {{ generate_evolution_table_single_source(category, start_year, end_year, 'base_cc_caract_emp') }}
+    {% else %}
+        {{ generate_evolution_table_generic(category, start_year, end_year) }}
+    {% endif %}
+{% endmacro %}
+
+{% macro generate_evolution_table_single_source(category, start_year, end_year, forced_table) %}
+    {# Génération de la liste des années #}
+    {% set years = [] %}
+    {% for year in range(start_year, end_year + 1) %}
+        {% do years.append(year) %}
+    {% endfor %}
+
+    {# Force une seule table source #}
+    {% set source_table_names = [forced_table] %}
+
+    {# Récupération de toutes les colonnes possibles pour cette catégorie #}
+    {% set all_columns_query %}
+        select distinct clef_json_transfo
+        from {{ source('sources', 'champs_disponibles_sources') }}
+        where categorie = '{{ category }}'
+        and base_table_source = '{{ forced_table }}'
+        order by clef_json_transfo
+    {% endset %}
+
+    {% set all_columns_result = run_query(all_columns_query) %}
+    {% set all_possible_columns = [] %}
+    {% for col in all_columns_result %}
+        {% do all_possible_columns.append(col[0]) %}
+    {% endfor %}
+
+    {# Génération des CTEs avec transformation de colonnes #}
+    with
+    {% for year in years %}
+        {{ forced_table }}_{{ year }} as (
+            {{ transform_column_names_robust(
+                source('sources', forced_table ~ '_' ~ year),
+                year,
+                category,
+                all_possible_columns
+            ) }}
+        ),
+    {% endfor %}
+
+    {{ forced_table }}_unified as (
+        {% for year in years %}
+            {% if not loop.first %}union all{% endif %}
+            select 
+                "CODGEO",
+                {% for col in all_possible_columns %}
+                    "{{ col }}",
+                {% endfor %}
+                annee
+            from {{ forced_table }}_{{ year }}
+        {% endfor %}
+    )
+
+    select
+        {{ forced_table }}_unified."CODGEO",
+        {% for col in all_possible_columns %}
+            {{ forced_table }}_unified."{{ col }}"{% if not loop.last %},{% endif %}
+        {% endfor %}
+        {% if all_possible_columns|length > 0 %},{% endif %}
+        {{ forced_table }}_unified.annee
+    from {{ forced_table }}_unified
+
+{% endmacro %}
+
+{% macro generate_evolution_table_generic(category, start_year, end_year) %}
     {# Génération de la liste des années #}
     {% set years = [] %}
     {% for year in range(start_year, end_year + 1) %}
@@ -109,8 +180,6 @@
             {% if all_possible_columns|length > 0 %},{% endif %}
             all_data_unified.annee
         from all_data_unified
-        {% endif %}
-
-    {% endif %}
+        {% endif %}    {% endif %}
 
 {% endmacro %}
