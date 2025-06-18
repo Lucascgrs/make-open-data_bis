@@ -1,21 +1,20 @@
-{% macro generate_evolution_table(category, start_year, end_year) %}
-    {# Simplified category to table mapping #}
+{% macro generate_evolution_table(category, start_year, end_year) %}    {# Simplified category to table mapping based on actual table names #}
     {% set category_table_mapping = {
-        'Categories_Socioprofessionnelles': 'base_cc_carac_emploi',
-        'Chomage': 'base_cc_carac_emploi',
-        'Education_Formation': 'base_cc_carac_emploi',
-        'Emploi_Complement': 'base_cc_carac_emploi',
-        'Emplois': 'base_cc_carac_emploi',
-        'Population_Active': 'base_cc_carac_emploi',
+        'Categories_Socioprofessionnelles': 'base_cc_evol_struct_pop',
+        'Chomage': 'base_cc_caract_emp',
+        'Education_Formation': 'base_cc_diplomes_formation',
+        'Emploi_Complement': 'base_cc_caract_emp',
+        'Emplois': 'base_cc_caract_emp',
+        'Population_Active': 'base_cc_caract_emp',
         'Logement_Caracteristiques': 'base_cc_logement',
         'Logement_Occupation': 'base_cc_logement',
         'Logement_Parc': 'base_cc_logement',
         'Logement_Type': 'base_cc_logement',
-        'Menage_Famille': 'base_cc_logement',
-        'Population_Age': 'base_cc_caracteristiques_population',
-        'Population_Generale': 'base_cc_caracteristiques_population',
-        'Population_Sexe': 'base_cc_caracteristiques_population',
-        'Revenus': 'base_cc_filosofi'
+        'Menage_Famille': 'base_cc_coupl_fam_men',
+        'Population_Age': 'base_cc_evol_struct_pop',
+        'Population_Generale': 'base_cc_evol_struct_pop',
+        'Population_Sexe': 'base_cc_evol_struct_pop',
+        'Revenus': 'filosofi_disponible'
     } %}
     
     {% if category in category_table_mapping %}
