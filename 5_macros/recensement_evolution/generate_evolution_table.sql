@@ -1,7 +1,9 @@
 {% macro generate_evolution_table(category, start_year, end_year) %}
-    {# Special handling for problematic categories #}
-    {% if category == 'Emplois' %}
+    {# Special handling for employment-related categories #}
+    {% if category in ['Emplois'] %}
         {{ generate_evolution_table_single_source(category, start_year, end_year, 'base_cc_caract_emp') }}
+    {% elif category in ['Chomage', 'Population_Active', 'Emploi_Complement'] %}
+        {{ generate_evolution_table_single_source(category, start_year, end_year, 'base_cc_emploi_pop_active') }}
     {% else %}
         {{ generate_evolution_table_generic(category, start_year, end_year) }}
     {% endif %}
@@ -30,9 +32,7 @@
     {% set all_possible_columns = [] %}
     {% for col in all_columns_result %}
         {% do all_possible_columns.append(col[0]) %}
-    {% endfor %}
-
-    {# Génération des CTEs avec transformation de colonnes #}
+    {% endfor %}    {# Génération des CTEs avec transformation de colonnes #}
     with
     {% for year in years %}
         {{ forced_table }}_{{ year }} as (
@@ -42,8 +42,8 @@
                 category,
                 all_possible_columns
             ) }}
-        ),
-    {% endfor %}
+        ){% if not loop.last %},{% endif %}
+    {% endfor %},
 
     {{ forced_table }}_unified as (
         {% for year in years %}
@@ -129,8 +129,7 @@
                 ) }}
             ){% if not (loop.last and loop.parent.loop.last) %},{% endif %}
         {% endfor %}
-    {% endfor %}
-    {% if source_table_names|length > 0 %},{% endif %}
+    {% endfor %},
 
     {# Union des données par table source #}
     {% for table_name in source_table_names %}
@@ -162,8 +161,9 @@
                 annee
             from {{ table_name }}_unified
         {% endfor %}
-    )
-    {% endif %}    {# Requête finale avec jointure des tables unifiées #}
+    )    {% endif %}
+
+    {# Requête finale avec jointure des tables unifiées #}
     select
         {% if source_table_names|length == 1 %}
             {{ source_table_names[0] }}_unified."CODGEO",
@@ -181,6 +181,8 @@
             {% if all_possible_columns|length > 0 %},{% endif %}
             all_data_unified.annee
         from all_data_unified
-        {% endif %}    {% endif %}
+        {% endif %}
+
+    {% endif %}
 
 {% endmacro %}
