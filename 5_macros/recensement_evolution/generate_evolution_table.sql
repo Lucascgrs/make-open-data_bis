@@ -3,9 +3,7 @@
     {% set years = [] %}
     {% for year in range(start_year, end_year + 1) %}
         {% do years.append(year) %}
-    {% endfor %}
-
-    {# Récupération des tables sources valides pour la catégorie donnée #}
+    {% endfor %}    {# Récupération des tables sources valides pour la catégorie donnée #}
     {% set source_tables_query %}
         select distinct base_table_source 
         from {{ source('sources', 'champs_disponibles_sources') }} 
@@ -13,6 +11,8 @@
         and base_table_source is not null
         and base_table_source != ''
         and base_table_source != 'None'
+        order by base_table_source
+        limit 1
     {% endset %}
 
     {% set source_tables = run_query(source_tables_query) %}
