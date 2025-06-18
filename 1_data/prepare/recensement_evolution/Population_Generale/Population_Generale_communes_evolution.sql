@@ -49,9 +49,7 @@ select
     c.siren,
     d.nom_departement,
     c.code_region,
-    r.nom_region,
-    s.nom_scot,
-    s.code_scot
+    r.nom_region
 from evolution_data e
 left join cog_communes c on ltrim(e."CODGEO", '0') = c.code_commune
 left join cog_departements d on c.code_departement = d.code_departement
