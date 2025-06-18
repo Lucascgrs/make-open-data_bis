@@ -9,9 +9,13 @@ with infos_communes as (
         code_region,
         nom_departement,
         nom_region,
-        "SCoT" as nom_scot,
-        "SIREN EPCI" as siren_epci
-    from {{ source('prepare', 'infos_communes') }}
+        coalesce(shape_epci."SIREN_EPCI", scot_mapping."SIREN EPCI") as siren_epci,
+        scot_mapping."SCoT" as nom_scot
+    from {{ source('prepare', 'infos_communes') }} as ic
+    left join {{ source('sources', 'shape_commune_2024') }} as shape_epci 
+        on ic.code_commune = shape_epci."INSEE_COM"
+    left join {{ source('sources', 'communes_to_scot') }} as scot_mapping 
+        on ic.code_commune = LPAD(CAST(scot_mapping."INSEE commune" AS TEXT), 5, '0')
 ),
 
 evolution_data as (
