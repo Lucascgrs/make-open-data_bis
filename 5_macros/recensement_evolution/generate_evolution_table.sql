@@ -50,9 +50,10 @@
             {% if not loop.first %}union all{% endif %}
             select 
                 "CODGEO",
-                {% for col in all_possible_columns %}
-                    "{{ col }}",
-                {% endfor %}
+                {% for col in all_possible_columns -%}
+                    "{{ col }}"{% if not loop.last %},{% endif %}
+                {% endfor -%}
+                {% if all_possible_columns|length > 0 %},{% endif %}
                 annee
             from {{ forced_table }}_{{ year }}
         {% endfor %}
@@ -60,9 +61,9 @@
 
     select
         {{ forced_table }}_unified."CODGEO",
-        {% for col in all_possible_columns %}
+        {% for col in all_possible_columns -%}
             {{ forced_table }}_unified."{{ col }}"{% if not loop.last %},{% endif %}
-        {% endfor %}
+        {% endfor -%}
         {% if all_possible_columns|length > 0 %},{% endif %}
         {{ forced_table }}_unified.annee
     from {{ forced_table }}_unified
@@ -74,7 +75,9 @@
     {% set years = [] %}
     {% for year in range(start_year, end_year + 1) %}
         {% do years.append(year) %}
-    {% endfor %}    {# Récupération des tables sources valides pour la catégorie donnée #}
+    {% endfor %}
+
+    {# Récupération des tables sources valides pour la catégorie donnée #}
     {% set source_tables_query %}
         select distinct base_table_source 
         from {{ source('sources', 'champs_disponibles_sources') }} 
@@ -92,7 +95,8 @@
         {% if table[0] and table[0] != 'None' and table[0] != '' %}
             {% do source_table_names.append(table[0]) %}
         {% endif %}
-    {% endfor %}   
+    {% endfor %}
+
     {% if source_table_names|length == 0 %}
         {# Retourner une table vide avec juste les colonnes essentielles #}
         select 
@@ -116,7 +120,9 @@
     {% set all_possible_columns = [] %}
     {% for col in all_columns_result %}
         {% do all_possible_columns.append(col[0]) %}
-    {% endfor %}    {# Génération des CTEs avec transformation de colonnes #}
+    {% endfor %}
+
+    {# Génération des CTEs avec transformation de colonnes #}
     with
     {% for table_name in source_table_names %}
         {% for year in years %}
@@ -127,7 +133,7 @@
                     category,
                     all_possible_columns
                 ) }}
-            ){% if not (loop.last and loop.parent.loop.last) %},{% endif %}
+            ){% if not (loop.last and loop.index0 == source_table_names|length - 1) %},{% endif %}
         {% endfor %}
     {% endfor %},
 
@@ -138,9 +144,10 @@
             {% if not loop.first %}union all{% endif %}
             select 
                 "CODGEO",
-                {% for col in all_possible_columns %}
-                    "{{ col }}",
-                {% endfor %}
+                {% for col in all_possible_columns -%}
+                    "{{ col }}"{% if not loop.last %},{% endif %}
+                {% endfor -%}
+                {% if all_possible_columns|length > 0 %},{% endif %}
                 annee,
                 '{{ table_name }}' as source_table
             from {{ table_name }}_{{ year }}
@@ -155,9 +162,10 @@
             {% if not loop.first %}union all{% endif %}
             select 
                 "CODGEO",
-                {% for col in all_possible_columns %}
-                    "{{ col }}",
-                {% endfor %}
+                {% for col in all_possible_columns -%}
+                    "{{ col }}"{% if not loop.last %},{% endif %}
+                {% endfor -%}
+                {% if all_possible_columns|length > 0 %},{% endif %}
                 annee
             from {{ table_name }}_unified
         {% endfor %}
@@ -167,20 +175,23 @@
     select
         {% if source_table_names|length == 1 %}
             {{ source_table_names[0] }}_unified."CODGEO",
-            {% for col in all_possible_columns %}
+            {% for col in all_possible_columns -%}
                 {{ source_table_names[0] }}_unified."{{ col }}"{% if not loop.last %},{% endif %}
-            {% endfor %}
+            {% endfor -%}
             {% if all_possible_columns|length > 0 %},{% endif %}
             {{ source_table_names[0] }}_unified.annee
         from {{ source_table_names[0] }}_unified
         {% else %}
             all_data_unified."CODGEO",
-            {% for col in all_possible_columns %}
+            {% for col in all_possible_columns -%}
                 all_data_unified."{{ col }}"{% if not loop.last %},{% endif %}
-            {% endfor %}
+            {% endfor -%}
             {% if all_possible_columns|length > 0 %},{% endif %}
             all_data_unified.annee
         from all_data_unified
+        {% endif %}
+
+    {% endif %}
         {% endif %}
 
     {% endif %}
