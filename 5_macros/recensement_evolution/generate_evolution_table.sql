@@ -61,30 +61,22 @@
             from {{ table_name }}_{{ year }}
         {% endfor %}
     ){% if not loop.last %},{% endif %}
-    {% endfor %}
-
-    {# Requête finale avec jointure des tables unifiées #}
+    {% endfor %}    {# Requête finale avec jointure des tables unifiées #}
     select
-        {% for table_name in source_table_names %}
-            {% if loop.first %}
-                {{ table_name }}_unified."CODGEO",
-            {% endif %}
-        {% endfor %}
+        {{ source_table_names[0] }}_unified."CODGEO",
         {% for col in all_possible_columns %}
-            {% for table_name in source_table_names %}
-                {% if loop.first %}
-                    coalesce(
-                {% endif %}
-                {{ table_name }}_unified."{{ col }}"
-                {% if not loop.last %}, {% else %}) as "{{ col }}"{% if not loop.last %},{% endif %}{% endif %}
-            {% endfor %}
+            {% if source_table_names|length == 1 %}
+                {{ source_table_names[0] }}_unified."{{ col }}"
+            {% else %}
+                coalesce(
+                    {% for table_name in source_table_names %}
+                        {{ table_name }}_unified."{{ col }}"{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                ) as "{{ col }}"
+            {% endif %}{% if not loop.last %},{% endif %}
         {% endfor %}
         {% if all_possible_columns|length > 0 %},{% endif %}
-        {% for table_name in source_table_names %}
-            {% if loop.first %}
-                {{ table_name }}_unified.annee
-            {% endif %}
-        {% endfor %}
+        {{ source_table_names[0] }}_unified.annee
 
     from {{ source_table_names[0] }}_unified
     {% for table_name in source_table_names[1:] %}
