@@ -6,7 +6,7 @@
         select distinct 
             champ_insee_transfo,
             clef_json_transfo
-        from {{ source('sources', 'champs_disponibles_sources') }}
+        from {{ source('prepare', 'champs_disponibles_sources') }}
         where categorie = '{{ category }}'
     {% endset %}
 
@@ -52,7 +52,7 @@
         select distinct 
             champ_insee_transfo,
             clef_json_transfo
-        from {{ source('sources', 'champs_disponibles_sources') }}
+        from {{ source('prepare', 'champs_disponibles_sources') }}
         where categorie = '{{ category }}'
     {% endset %}
 
@@ -82,7 +82,7 @@
         {% for target_col in all_possible_columns %}
             {% if target_col in inverse_mapping %}
                 {% set base_col = inverse_mapping[target_col] %}
-                {% set original_col = base_col[0] ~ year_suffix ~ '_' ~ base_col.split('_')[1:] | join('_') %}
+                {% set original_col = base_col.replace('XX', year_suffix) %}
                 {% if original_col in existing_columns %}
                     "{{ original_col }}" as "{{ target_col }}"
                 {% else %}

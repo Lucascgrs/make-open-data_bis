@@ -15,12 +15,10 @@
     {% endfor %}
 
     {# Force une seule table source #}
-    {% set source_table_names = [forced_table] %}
-
-    {# Récupération de toutes les colonnes possibles pour cette catégorie #}
+    {% set source_table_names = [forced_table] %}    {# Récupération de toutes les colonnes possibles pour cette catégorie #}
     {% set all_columns_query %}
         select distinct clef_json_transfo
-        from {{ source('sources', 'champs_disponibles_sources') }}
+        from {{ source('prepare', 'champs_disponibles_sources') }}
         where categorie = '{{ category }}'
         and base_table_source = '{{ forced_table }}'
         order by clef_json_transfo
@@ -77,7 +75,7 @@
     {% endfor %}    {# Récupération des tables sources valides pour la catégorie donnée #}
     {% set source_tables_query %}
         select distinct base_table_source 
-        from {{ source('sources', 'champs_disponibles_sources') }} 
+        from {{ source('prepare', 'champs_disponibles_sources') }} 
         where categorie = '{{ category }}'
         and base_table_source is not null
         and base_table_source != ''
@@ -91,20 +89,18 @@
     {% for table in source_tables %}
         {% if table[0] and table[0] != 'None' and table[0] != '' %}
             {% do source_table_names.append(table[0]) %}
-        {% endif %}
-    {% endfor %}    {# Vérifier qu'on a au moins une table source #}
+        {% endif %}    {% endfor %}
+
     {% if source_table_names|length == 0 %}
         {# Retourner une table vide avec juste les colonnes essentielles #}
         select 
             null::text as "CODGEO",
             null::integer as annee
         where false
-    {% else %}
-
-    {# Récupération de toutes les colonnes possibles pour cette catégorie #}
+    {% else %}    {# Récupération de toutes les colonnes possibles pour cette catégorie #}
     {% set all_columns_query %}
         select distinct clef_json_transfo
-        from {{ source('sources', 'champs_disponibles_sources') }}
+        from {{ source('prepare', 'champs_disponibles_sources') }}
         where categorie = '{{ category }}'
         and base_table_source is not null
         and base_table_source != ''
@@ -131,7 +127,9 @@
                 ) }}
             ),
         {% endfor %}
-    {% endfor %}    {# Union des données par table source #}
+    {% endfor %}
+
+    {# Union des données par table source #}
     {% for table_name in source_table_names %}
     {{ table_name }}_unified as (
         {% for year in years %}
@@ -162,7 +160,9 @@
             from {{ table_name }}_unified
         {% endfor %}
     )
-    {% endif %}    {# Requête finale avec jointure des tables unifiées #}
+    {% endif %}
+
+    {# Requête finale avec jointure des tables unifiées #}
     select
         {% if source_table_names|length == 1 %}
             {{ source_table_names[0] }}_unified."CODGEO",
@@ -180,6 +180,8 @@
             {% if all_possible_columns|length > 0 %},{% endif %}
             all_data_unified.annee
         from all_data_unified
-        {% endif %}    {% endif %}
+        {% endif %}
+
+    {% endif %}
 
 {% endmacro %}
