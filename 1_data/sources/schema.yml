@@ -1232,3 +1232,91 @@ sources:
       - name: communes_to_scot
         description: "File mapping top what Scot blongs each commune"
 
+      # Recensement Evolution Tables - Population Structure
+      - name: base_cc_evol_struct_pop_2016
+        description: "Evolution structure population data 2016"
+      - name: base_cc_evol_struct_pop_2017
+        description: "Evolution structure population data 2017"
+      - name: base_cc_evol_struct_pop_2018
+        description: "Evolution structure population data 2018"
+      - name: base_cc_evol_struct_pop_2019
+        description: "Evolution structure population data 2019"
+      - name: base_cc_evol_struct_pop_2020
+        description: "Evolution structure population data 2020"
+      - name: base_cc_evol_struct_pop_2021
+        description: "Evolution structure population data 2021"
+
+      # Recensement Evolution Tables - Active Population Employment
+      - name: base_cc_emploi_pop_active_2016
+        description: "Active population employment data 2016"
+      - name: base_cc_emploi_pop_active_2017
+        description: "Active population employment data 2017"
+      - name: base_cc_emploi_pop_active_2018
+        description: "Active population employment data 2018"
+      - name: base_cc_emploi_pop_active_2019
+        description: "Active population employment data 2019"
+      - name: base_cc_emploi_pop_active_2020
+        description: "Active population employment data 2020"
+      - name: base_cc_emploi_pop_active_2021
+        description: "Active population employment data 2021"
+
+      # Recensement Evolution Tables - Employment Characteristics
+      - name: base_cc_carac_emploi_2016
+        description: "Employment characteristics data 2016"
+      - name: base_cc_carac_emploi_2017
+        description: "Employment characteristics data 2017"
+      - name: base_cc_carac_emploi_2018
+        description: "Employment characteristics data 2018"
+      - name: base_cc_carac_emploi_2019
+        description: "Employment characteristics data 2019"
+      - name: base_cc_carac_emploi_2020
+        description: "Employment characteristics data 2020"
+      - name: base_cc_carac_emploi_2021
+        description: "Employment characteristics data 2021"
+
+      # Recensement Evolution Tables - Couples/Families/Households
+      - name: base_cc_coupl_fam_men_2016
+        description: "Couples, families, households data 2016"
+      - name: base_cc_coupl_fam_men_2017
+        description: "Couples, families, households data 2017"
+      - name: base_cc_coupl_fam_men_2018
+        description: "Couples, families, households data 2018"
+      - name: base_cc_coupl_fam_men_2019
+        description: "Couples, families, households data 2019"
+      - name: base_cc_coupl_fam_men_2020
+        description: "Couples, families, households data 2020"
+      - name: base_cc_coupl_fam_men_2021
+        description: "Couples, families, households data 2021"
+
+      # Recensement Evolution Tables - Education/Training
+      - name: base_cc_diplomes_formation_2016
+        description: "Education and training data 2016"
+      - name: base_cc_diplomes_formation_2017
+        description: "Education and training data 2017"
+      - name: base_cc_diplomes_formation_2018
+        description: "Education and training data 2018"
+      - name: base_cc_diplomes_formation_2019
+        description: "Education and training data 2019"
+      - name: base_cc_diplomes_formation_2020
+        description: "Education and training data 2020"
+      - name: base_cc_diplomes_formation_2021
+        description: "Education and training data 2021"
+
+      # Recensement Evolution Tables - Housing
+      - name: base_cc_logement_2016
+        description: "Housing data 2016"
+      - name: base_cc_logement_2017
+        description: "Housing data 2017"
+      - name: base_cc_logement_2018
+        description: "Housing data 2018"
+      - name: base_cc_logement_2019
+        description: "Housing data 2019"
+      - name: base_cc_logement_2020
+        description: "Housing data 2020"
+      - name: base_cc_logement_2021
+        description: "Housing data 2021"
+
+      # Metadata table for recensement evolution
+      - name: champs_disponibles_sources
+        description: "Metadata table containing available fields and source mappings for recensement evolution data"
+
