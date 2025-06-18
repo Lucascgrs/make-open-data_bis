@@ -92,7 +92,7 @@
         {% if table[0] and table[0] != 'None' and table[0] != '' %}
             {% do source_table_names.append(table[0]) %}
         {% endif %}
-    {% endfor %}    {# Vérifier qu'on a au moins une table source #}
+    {% endfor %}   
     {% if source_table_names|length == 0 %}
         {# Retourner une table vide avec juste les colonnes essentielles #}
         select 
@@ -116,9 +116,7 @@
     {% set all_possible_columns = [] %}
     {% for col in all_columns_result %}
         {% do all_possible_columns.append(col[0]) %}
-    {% endfor %}
-
-    {# Génération des CTEs avec transformation de colonnes #}
+    {% endfor %}    {# Génération des CTEs avec transformation de colonnes #}
     with
     {% for table_name in source_table_names %}
         {% for year in years %}
@@ -129,9 +127,12 @@
                     category,
                     all_possible_columns
                 ) }}
-            ),
+            ){% if not (loop.last and loop.parent.loop.last) %},{% endif %}
         {% endfor %}
-    {% endfor %}    {# Union des données par table source #}
+    {% endfor %}
+    {% if source_table_names|length > 0 %},{% endif %}
+
+    {# Union des données par table source #}
     {% for table_name in source_table_names %}
     {{ table_name }}_unified as (
         {% for year in years %}
