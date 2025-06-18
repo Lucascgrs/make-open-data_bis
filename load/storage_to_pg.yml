@@ -290,37 +290,37 @@ communes_to_scot:
   file_format: 'csv'
   csv_delimiter: ";"
 
-base_cc_caract_emp_2016:
+base_cc_carac_emploi_2016:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/recensement_evolution/base-cc-carac-emploi/base-cc-carac-emploi-2016.CSV" 
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-base_cc_caract_emp_2017:
+base_cc_carac_emploi_2017:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/recensement_evolution/base-cc-carac-emploi/base-cc-carac-emploi-2017.CSV" 
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-base_cc_caract_emp_2018:
+base_cc_carac_emploi_2018:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/recensement_evolution/base-cc-carac-emploi/base-cc-carac-emploi-2018.CSV" 
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-base_cc_caract_emp_2019:
+base_cc_carac_emploi_2019:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/recensement_evolution/base-cc-carac-emploi/base-cc-carac-emploi-2019.CSV" 
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-base_cc_caract_emp_2020:
+base_cc_carac_emploi_2020:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/recensement_evolution/base-cc-carac-emploi/base-cc-carac-emploi-2020.CSV" 
   db_schema: "sources"
   file_format: 'csv'
   csv_delimiter: ";"
 
-base_cc_caract_emp_2021:
+base_cc_carac_emploi_2021:
   storage_path: "https://make-open-data-s3.fra1.digitaloceanspaces.com/recensement_evolution/base-cc-carac-emploi/base-cc-carac-emploi-2021.CSV" 
   db_schema: "sources"
   file_format: 'csv'

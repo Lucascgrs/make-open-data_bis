@@ -1,5 +1,4 @@
 {% macro generate_evolution_table(category, start_year, end_year) %}
-    {# Special handling for problematic categories #}
     {% if category == 'Emplois' %}
         {{ generate_evolution_table_single_source(category, start_year, end_year, 'base_cc_caract_emp') }}
     {% else %}
@@ -8,16 +7,13 @@
 {% endmacro %}
 
 {% macro generate_evolution_table_single_source(category, start_year, end_year, forced_table) %}
-    {# Génération de la liste des années #}
     {% set years = [] %}
     {% for year in range(start_year, end_year + 1) %}
         {% do years.append(year) %}
     {% endfor %}
 
-    {# Force une seule table source #}
     {% set source_table_names = [forced_table] %}
 
-    {# Récupération de toutes les colonnes possibles pour cette catégorie #}
     {% set all_columns_query %}
         select distinct clef_json_transfo
         from {{ source('sources', 'champs_disponibles_sources') }}
@@ -32,7 +28,6 @@
         {% do all_possible_columns.append(col[0]) %}
     {% endfor %}
 
-    {# Génération des CTEs avec transformation de colonnes #}
     with
     {% for year in years %}
         {{ forced_table }}_{{ year }} as (
@@ -70,7 +65,6 @@
 {% endmacro %}
 
 {% macro generate_evolution_table_generic(category, start_year, end_year) %}
-    {# Génération de la liste des années #}
     {% set years = [] %}
     {% for year in range(start_year, end_year + 1) %}
         {% do years.append(year) %}
@@ -92,7 +86,7 @@
         {% if table[0] and table[0] != 'None' and table[0] != '' %}
             {% do source_table_names.append(table[0]) %}
         {% endif %}
-    {% endfor %}    {# Vérifier qu'on a au moins une table source #}
+    {% endfor %}
     {% if source_table_names|length == 0 %}
         {# Retourner une table vide avec juste les colonnes essentielles #}
         select 
@@ -101,7 +95,6 @@
         where false
     {% else %}
 
-    {# Récupération de toutes les colonnes possibles pour cette catégorie #}
     {% set all_columns_query %}
         select distinct clef_json_transfo
         from {{ source('sources', 'champs_disponibles_sources') }}
@@ -118,7 +111,6 @@
         {% do all_possible_columns.append(col[0]) %}
     {% endfor %}
 
-    {# Génération des CTEs avec transformation de colonnes #}
     with
     {% for table_name in source_table_names %}
         {% for year in years %}
@@ -148,7 +140,6 @@
     ){% if not loop.last %},{% endif %}
     {% endfor %}
 
-    {# Si plusieurs tables sources, les unifier #}
     {% if source_table_names|length > 1 %}
     ,all_data_unified as (
         {% for table_name in source_table_names %}
@@ -162,7 +153,7 @@
             from {{ table_name }}_unified
         {% endfor %}
     )
-    {% endif %}    {# Requête finale avec jointure des tables unifiées #}
+    {% endif %}
     select
         {% if source_table_names|length == 1 %}
             {{ source_table_names[0] }}_unified."CODGEO",
