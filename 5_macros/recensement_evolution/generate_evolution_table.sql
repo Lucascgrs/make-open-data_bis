@@ -21,21 +21,12 @@
         {% if table[0] and table[0] != 'None' and table[0] != '' %}
             {% do source_table_names.append(table[0]) %}
         {% endif %}
-    {% endfor %}
-
-    {# Vérifier qu'on a au moins une table source #}
+    {% endfor %}    {# Vérifier qu'on a au moins une table source #}
     {% if source_table_names|length == 0 %}
-        {# Retourner une table vide avec la structure attendue #}
+        {# Retourner une table vide avec juste les colonnes essentielles #}
         select 
             null::text as "CODGEO",
-            null::integer as annee,
-            null::text as nom_commune,
-            null::text as code_departement,
-            null::text as siren_epci,
-            null::text as nom_departement,
-            null::text as code_region,
-            null::text as nom_region,
-            null::text as nom_scot
+            null::integer as annee
         where false
     {% else %}
 
@@ -85,20 +76,21 @@
             from {{ table_name }}_{{ year }}
         {% endfor %}
     ){% if not loop.last %},{% endif %}
-    {% endfor %}
-
-    {# Requête finale avec jointure des tables unifiées #}
+    {% endfor %}    {# Requête finale avec jointure des tables unifiées #}
     select
         {{ source_table_names[0] }}_unified."CODGEO",
         {% for col in all_possible_columns %}
             {% if source_table_names|length == 1 %}
                 {{ source_table_names[0] }}_unified."{{ col }}"
             {% else %}
-                coalesce(
-                    {% for table_name in source_table_names %}
-                        {{ table_name }}_unified."{{ col }}"{% if not loop.last %}, {% endif %}
-                    {% endfor %}
-                ) as "{{ col }}"
+                {# Pour plusieurs tables, prendre la première table qui a des données non nulles #}
+                {% for table_name in source_table_names %}
+                    {% if loop.first %}
+                        coalesce({{ table_name }}_unified."{{ col }}"
+                    {% else %}
+                        , {{ table_name }}_unified."{{ col }}"
+                    {% endif %}
+                {% endfor %}) as "{{ col }}"
             {% endif %}{% if not loop.last %},{% endif %}
         {% endfor %}
         {% if all_possible_columns|length > 0 %},{% endif %}
