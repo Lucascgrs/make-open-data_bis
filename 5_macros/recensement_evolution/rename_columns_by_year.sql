@@ -6,7 +6,7 @@
         select distinct 
             champ_insee_transfo,
             clef_json_transfo
-        from {{ source('prepare', 'champs_disponibles_sources') }}
+        from {{ source('sources', 'champs_disponibles_sources') }}
         where categorie = '{{ category }}'
     {% endset %}
 
@@ -52,7 +52,7 @@
         select distinct 
             champ_insee_transfo,
             clef_json_transfo
-        from {{ source('prepare', 'champs_disponibles_sources') }}
+        from {{ source('sources', 'champs_disponibles_sources') }}
         where categorie = '{{ category }}'
     {% endset %}
 

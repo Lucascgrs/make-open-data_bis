@@ -18,7 +18,7 @@
     {% set source_table_names = [forced_table] %}    {# Récupération de toutes les colonnes possibles pour cette catégorie #}
     {% set all_columns_query %}
         select distinct clef_json_transfo
-        from {{ source('prepare', 'champs_disponibles_sources') }}
+        from {{ source('sources', 'champs_disponibles_sources') }}
         where categorie = '{{ category }}'
         and base_table_source = '{{ forced_table }}'
         order by clef_json_transfo
@@ -75,7 +75,7 @@
     {% endfor %}    {# Récupération des tables sources valides pour la catégorie donnée #}
     {% set source_tables_query %}
         select distinct base_table_source 
-        from {{ source('prepare', 'champs_disponibles_sources') }} 
+        from {{ source('sources', 'champs_disponibles_sources') }} 
         where categorie = '{{ category }}'
         and base_table_source is not null
         and base_table_source != ''
@@ -100,7 +100,7 @@
     {% else %}    {# Récupération de toutes les colonnes possibles pour cette catégorie #}
     {% set all_columns_query %}
         select distinct clef_json_transfo
-        from {{ source('prepare', 'champs_disponibles_sources') }}
+        from {{ source('sources', 'champs_disponibles_sources') }}
         where categorie = '{{ category }}'
         and base_table_source is not null
         and base_table_source != ''
