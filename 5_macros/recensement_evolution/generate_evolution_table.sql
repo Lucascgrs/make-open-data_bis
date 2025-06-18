@@ -17,20 +17,31 @@
     {% set all_possible_columns = [] %}
     {% for col in all_columns_result %}
         {% do all_possible_columns.append(col[0]) %}
-    {% endfor %}
-
-    {# Récupération des tables sources pour la catégorie donnée #}
+    {% endfor %}    {# Récupération des tables sources pour la catégorie donnée #}
     {% set source_tables_query %}
         select distinct base_table_source 
         from {{ source('sources', 'champs_disponibles_sources') }} 
         where categorie = '{{ category }}'
+        and base_table_source is not null
+        and base_table_source != ''
     {% endset %}
 
     {% set source_tables = run_query(source_tables_query) %}
     {% set source_table_names = [] %}
     {% for table in source_tables %}
-        {% do source_table_names.append(table[0]) %}
+        {% if table[0] and table[0] != 'None' %}
+            {% do source_table_names.append(table[0]) %}
+        {% endif %}
     {% endfor %}
+
+    {# Vérifier qu'on a au moins une table source #}
+    {% if source_table_names|length == 0 %}
+        {{ log("Aucune table source trouvée pour la catégorie: " ~ category, info=true) }}
+        select 
+            null as "CODGEO",
+            null as annee
+        where false
+    {% else %}
 
     {# Génération des CTEs avec transformation de colonnes #}
     with
@@ -63,8 +74,7 @@
     ){% if not loop.last %},{% endif %}
     {% endfor %}    {# Requête finale avec jointure des tables unifiées #}
     select
-        {{ source_table_names[0] }}_unified."CODGEO",
-        {% for col in all_possible_columns %}
+        {{ source_table_names[0] }}_unified."CODGEO",        {% for col in all_possible_columns %}
             {% if source_table_names|length == 1 %}
                 {{ source_table_names[0] }}_unified."{{ col }}"
             {% else %}
@@ -79,10 +89,11 @@
         {{ source_table_names[0] }}_unified.annee
 
     from {{ source_table_names[0] }}_unified
-    {% for table_name in source_table_names[1:] %}
-        full outer join {{ table_name }}_unified
+    {% for table_name in source_table_names[1:] %}        full outer join {{ table_name }}_unified
             on {{ source_table_names[0] }}_unified."CODGEO" = {{ table_name }}_unified."CODGEO"
             and {{ source_table_names[0] }}_unified.annee = {{ table_name }}_unified.annee
     {% endfor %}
+
+    {% endif %}
 
 {% endmacro %}
