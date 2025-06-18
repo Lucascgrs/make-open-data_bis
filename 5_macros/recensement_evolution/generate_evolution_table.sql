@@ -1,91 +1,57 @@
-{% macro generate_evolution_table(category, start_year, end_year) %}    {# Simplified category to table mapping based on actual table names #}
-    {% set category_table_mapping = {
-        'Categories_Socioprofessionnelles': 'base_cc_evol_struct_pop',
-        'Chomage': 'base_cc_caract_emp',
-        'Education_Formation': 'base_cc_diplomes_formation',
-        'Emploi_Complement': 'base_cc_caract_emp',
-        'Emplois': 'base_cc_caract_emp',
-        'Population_Active': 'base_cc_caract_emp',
-        'Logement_Caracteristiques': 'base_cc_logement',
-        'Logement_Occupation': 'base_cc_logement',
-        'Logement_Parc': 'base_cc_logement',
-        'Logement_Type': 'base_cc_logement',
-        'Menage_Famille': 'base_cc_coupl_fam_men',
-        'Population_Age': 'base_cc_evol_struct_pop',
-        'Population_Generale': 'base_cc_evol_struct_pop',
-        'Population_Sexe': 'base_cc_evol_struct_pop',
-        'Revenus': 'filosofi_disponible'
-    } %}
-    
-    {% if category in category_table_mapping %}
-        {% set forced_table = category_table_mapping[category] %}
+{% macro generate_evolution_table(category, start_year, end_year) %}
+    {# Special handling for problematic categories with forced table mapping #}
+    {% if category == 'Emplois' %}
+        {{ generate_evolution_table_single_source(category, start_year, end_year, 'base_cc_emploi_pop_active') }}
+    {% elif category == 'Population_Active' %}
+        {{ generate_evolution_table_single_source(category, start_year, end_year, 'base_cc_emploi_pop_active') }}
+    {% elif category == 'Emploi_Complement' %}
+        {{ generate_evolution_table_single_source(category, start_year, end_year, 'base_cc_emploi_pop_active') }}
+    {% elif category == 'Chomage' %}
+        {{ generate_evolution_table_single_source(category, start_year, end_year, 'base_cc_emploi_pop_active') }}
     {% else %}
-        {# Auto-detect table for unknown categories #}
-        {% set source_tables_query %}
-            select distinct base_table_source 
-            from {{ source('sources', 'champs_disponibles_sources') }} 
-            where categorie = '{{ category }}'
-            and base_table_source is not null
-            and base_table_source != ''
-            and base_table_source != 'None'
-            order by base_table_source
-            limit 1
-        {% endset %}
-        
-        {% set source_tables = run_query(source_tables_query) %}
-        {% if source_tables and source_tables.rows|length > 0 %}
-            {% set forced_table = source_tables.rows[0][0] %}
-        {% else %}
-            {% set forced_table = null %}
-        {% endif %}
+        {{ generate_evolution_table_generic(category, start_year, end_year) }}
     {% endif %}
-
-    {{ generate_evolution_table_implementation(category, start_year, end_year, forced_table) }}
 {% endmacro %}
 
-{% macro generate_evolution_table_implementation(category, start_year, end_year, forced_table) %}
-    {% if not forced_table %}
-        {# Return empty table if no source table found #}
-        select 
-            null::text as "CODGEO",
-            null::integer as annee
-        where false
-    {% else %}
-        {# Generate list of years #}
-        {% set years = [] %}
-        {% for year in range(start_year, end_year + 1) %}
-            {% do years.append(year) %}
-        {% endfor %}
+{% macro generate_evolution_table_single_source(category, start_year, end_year, forced_table) %}
+    {# Génération de la liste des années #}
+    {% set years = [] %}
+    {% for year in range(start_year, end_year + 1) %}
+        {% do years.append(year) %}
+    {% endfor %}
 
-        {# Get all possible columns for this category and table #}
-        {% set all_columns_query %}
-            select distinct clef_json_transfo
-            from {{ source('sources', 'champs_disponibles_sources') }}
-            where categorie = '{{ category }}'
-            and base_table_source = '{{ forced_table }}'
-            order by clef_json_transfo
-        {% endset %}
+    {# Force une seule table source #}
+    {% set source_table_names = [forced_table] %}
 
-        {% set all_columns_result = run_query(all_columns_query) %}
-        {% set all_possible_columns = [] %}
-        {% for col in all_columns_result %}
-            {% do all_possible_columns.append(col[0]) %}
-        {% endfor %}
+    {# Récupération de toutes les colonnes possibles pour cette catégorie #}
+    {% set all_columns_query %}
+        select distinct clef_json_transfo
+        from {{ source('sources', 'champs_disponibles_sources') }}
+        where categorie = '{{ category }}'
+        and base_table_source = '{{ forced_table }}'
+        order by clef_json_transfo
+    {% endset %}
 
-        {# Generate CTEs with column transformation #}
-        with
-        {% for year in years %}
-            {{ forced_table }}_{{ year }} as (
-                {{ transform_column_names_robust(
-                    source('sources', forced_table ~ '_' ~ year),
-                    year,
-                    category,
-                    all_possible_columns
-                ) }}
-            ){% if not loop.last %},{% endif %}
-        {% endfor %}
+    {% set all_columns_result = run_query(all_columns_query) %}
+    {% set all_possible_columns = [] %}
+    {% for col in all_columns_result %}
+        {% do all_possible_columns.append(col[0]) %}
+    {% endfor %}
 
-        {# Union all years #}
+    {# Génération des CTEs avec transformation de colonnes #}
+    with
+    {% for year in years %}
+        {{ forced_table }}_{{ year }} as (
+            {{ transform_column_names_robust(
+                source('sources', forced_table ~ '_' ~ year),
+                year,
+                category,
+                all_possible_columns
+            ) }}
+        ){% if not loop.last %},{% endif %}
+    {% endfor %}
+
+    {{ forced_table }}_unified as (
         {% for year in years %}
             {% if not loop.first %}union all{% endif %}
             select 
@@ -97,5 +63,141 @@
                 annee
             from {{ forced_table }}_{{ year }}
         {% endfor %}
+    )
+
+    select
+        {{ forced_table }}_unified."CODGEO",
+        {% for col in all_possible_columns -%}
+            {{ forced_table }}_unified."{{ col }}"{% if not loop.last %},{% endif %}
+        {% endfor -%}
+        {% if all_possible_columns|length > 0 %},{% endif %}
+        {{ forced_table }}_unified.annee
+    from {{ forced_table }}_unified
+
+{% endmacro %}
+
+{% macro generate_evolution_table_generic(category, start_year, end_year) %}
+    {# Génération de la liste des années #}
+    {% set years = [] %}
+    {% for year in range(start_year, end_year + 1) %}
+        {% do years.append(year) %}
+    {% endfor %}
+
+    {# Récupération des tables sources valides pour la catégorie donnée #}
+    {% set source_tables_query %}
+        select distinct base_table_source 
+        from {{ source('sources', 'champs_disponibles_sources') }} 
+        where categorie = '{{ category }}'
+        and base_table_source is not null
+        and base_table_source != ''
+        and base_table_source != 'None'
+        order by base_table_source
+        limit 1
+    {% endset %}
+
+    {% set source_tables = run_query(source_tables_query) %}
+    {% set source_table_names = [] %}
+    {% for table in source_tables %}
+        {% if table[0] and table[0] != 'None' and table[0] != '' %}
+            {% do source_table_names.append(table[0]) %}
+        {% endif %}
+    {% endfor %}
+
+    {% if source_table_names|length == 0 %}
+        {# Retourner une table vide avec juste les colonnes essentielles #}
+        select 
+            null::text as "CODGEO",
+            null::integer as annee
+        where false
+    {% else %}
+
+    {# Récupération de toutes les colonnes possibles pour cette catégorie #}
+    {% set all_columns_query %}
+        select distinct clef_json_transfo
+        from {{ source('sources', 'champs_disponibles_sources') }}
+        where categorie = '{{ category }}'
+        and base_table_source is not null
+        and base_table_source != ''
+        and base_table_source != 'None'
+        order by clef_json_transfo
+    {% endset %}
+
+    {% set all_columns_result = run_query(all_columns_query) %}
+    {% set all_possible_columns = [] %}
+    {% for col in all_columns_result %}
+        {% do all_possible_columns.append(col[0]) %}
+    {% endfor %}
+
+    {# Génération des CTEs avec transformation de colonnes #}
+    with
+    {% for table_name in source_table_names %}
+        {% for year in years %}
+            {{ table_name }}_{{ year }} as (
+                {{ transform_column_names_robust(
+                    source('sources', table_name ~ '_' ~ year),
+                    year,
+                    category,
+                    all_possible_columns
+                ) }}
+            ){% if not (loop.last and loop.index0 == source_table_names|length - 1) %},{% endif %}
+        {% endfor %}
+    {% endfor %}
+
+    {# Union des données par table source #}
+    {% for table_name in source_table_names %}
+    {{ table_name }}_unified as (
+        {% for year in years %}
+            {% if not loop.first %}union all{% endif %}
+            select 
+                "CODGEO",
+                {% for col in all_possible_columns -%}
+                    "{{ col }}"{% if not loop.last %},{% endif %}
+                {% endfor -%}
+                {% if all_possible_columns|length > 0 %},{% endif %}
+                annee,
+                '{{ table_name }}' as source_table
+            from {{ table_name }}_{{ year }}
+        {% endfor %}
+    ){% if not loop.last %},{% endif %}
+    {% endfor %}
+
+    {# Si plusieurs tables sources, les unifier #}
+    {% if source_table_names|length > 1 %}
+    ,all_data_unified as (
+        {% for table_name in source_table_names %}
+            {% if not loop.first %}union all{% endif %}
+            select 
+                "CODGEO",
+                {% for col in all_possible_columns -%}
+                    "{{ col }}"{% if not loop.last %},{% endif %}
+                {% endfor -%}
+                {% if all_possible_columns|length > 0 %},{% endif %}
+                annee
+            from {{ table_name }}_unified
+        {% endfor %}
+    )
     {% endif %}
+
+    {# Requête finale avec jointure des tables unifiées #}
+    select
+        {% if source_table_names|length == 1 %}
+            {{ source_table_names[0] }}_unified."CODGEO",
+            {% for col in all_possible_columns -%}
+                {{ source_table_names[0] }}_unified."{{ col }}"{% if not loop.last %},{% endif %}
+            {% endfor -%}
+            {% if all_possible_columns|length > 0 %},{% endif %}
+            {{ source_table_names[0] }}_unified.annee
+        from {{ source_table_names[0] }}_unified
+        {% else %}
+            all_data_unified."CODGEO",
+            {% for col in all_possible_columns -%}
+                all_data_unified."{{ col }}"{% if not loop.last %},{% endif %}
+            {% endfor -%}
+            {% if all_possible_columns|length > 0 %},{% endif %}
+            all_data_unified.annee
+        from all_data_unified
+        {% endif %}
+
+    {% endif %}
+
 {% endmacro %}
